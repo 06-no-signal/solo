@@ -6,13 +6,8 @@ spec:
   gatewayClassName: nginx
   listeners:
     - name: https-listener
-      protocol: HTTPS
+      protocol: HTTP
       port: {{ .Values.gateway.port }}
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - kind: Secret
-            name: {{ .Values.gateway.tlsSecret }}
       allowedRoutes:
         namespaces:
           from: All
@@ -42,3 +37,18 @@ spec:
         - name: {{ include "frontend.fullname" . }}
           port: {{ .Values.frontend.port }}
 
+---
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "gateway.route" . }}
+spec:
+  hostnames:
+    - {{ .Values.keycloak.host }}
+  parentRefs:
+    - name: {{ include "gateway.fullname" . }}
+  rules:
+    - backendRefs:
+        - name: {{ include "keycloak.fullname" . }}
+          port: {{ .Values.keycloak.port }}
