@@ -29,15 +29,27 @@
 </head>
 <body>
     <h1>Solo</h1>
-    <div class="video-container"><video id="localVideo" autoplay muted></video></div>
-    <div class="video-container"><video id="remoteVideo" autoplay></video></div>
-    <span>Target: <input type="text" name="target" placeholder="(leave blank to advertise)"/></span>
-    <button id="prepare">Prepare</button>
-    <button id="startCall">Start Call</button>
-    <button id="endCall">End Call</button>
 
+    <div>
+        <span>Username: <input type="text" name="username" placeholder="(leave blank to stay anonymous)"/></span>
+        <button id="setup">Log in</button>
+    </div>
+
+    <div>
+        <select name="target">
+            <option selected="selected" disabled="true">-- Select a target --</option>
+        </select>
+        <button id="startCall" disabled="disabled">Start Call</button>
+        <button id="endCall" disabled="disabled">End Call</button>
+    </div>
+
+    <div class="video-grid">
+        <div class="video-container"><video id="localVideo" autoplay muted></video></div>
+        <div class="video-container"><video id="remoteVideo" autoplay></video></div>
+    </div>
     <script>
-        const ws = new WebSocket("wss://solo.yon.si/ws");
+        let ws;
+        let username;
         let localStream;
         let peerConnection;
         const config = {
@@ -56,13 +68,23 @@
             }
         };
 
-        async function prepare() {
+        async function setup() {
+            username = document.querySelector('input[name="username"]').value;
+            if (!username) {
+                username = crypto.randomUUID();
+            }
+
+            ws = new WebSocket("wss://solo.yon.si/ws");
             localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             document.getElementById("localVideo").srcObject = localStream;
         }
 
         async function startCall() {
             const target = document.querySelector('input[name="target"]').value;
+            if (!target) {
+                alert("No target selected.");
+                return;
+            }
 
             peerConnection = new RTCPeerConnection(config);
             peerConnection.onicecandidate = (event) => {
@@ -133,7 +155,7 @@
             document.getElementById("localVideo").srcObject = null; // Remove video feed
             document.getElementById("remoteVideo").srcObject = null;
         }
-        document.getElementById("prepare").addEventListener("click", prepare);
+        document.getElementById("setup").addEventListener("click", setup);
         document.getElementById("startCall").addEventListener("click", startCall);
         document.getElementById("endCall").addEventListener("click", endCall);
     </script>

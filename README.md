@@ -24,40 +24,23 @@
 
 ## Why Solo?
 
-### Because We All Hate Microsoft Teams
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  "Is Microsoft Teams slow for you too?"                     │
-│  "Why is Teams using 6GB of RAM?"                           │
-│  "Teams crashed again..."                                   │
-│  "Can anyone hear me? HELLO?"                               │
-│  "My screen share is frozen..."                             │
-└─────────────────────────────────────────────────────────────┘
-                            │
-                            │  Sound familiar?
-                            ▼
-                    ┌───────────────┐
-                    │  Use Solo! 🎉 │
-                    └───────────────┘
-```
-
 | Feature | Solo | Microsoft Teams | Zoom | Discord |
 |---------|------|-----------------|------|---------|
 | **Homie Approval** | 🟢 💯% | 🔴 0% | 🟡 50% | 🟡 75% |
 
-
-```
-╔═══════════════════════════════════════════════╗
-║  "Solo: Because your screen share shouldn't  ║
-║         make everyone's laptop fans spin up  ║
-║           like it's about to take off."      ║
-╚═══════════════════════════════════════════════╝
-```
-
-**Remember:** Life's too short for bad screen sharing apps! 🚀
-
 ---
+
+# Install gateway controller
+
+nginx gateway controller installed in the cluster.
+1. Install gateway-api CRDs:
+```bash
+kubectl apply -k "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.1.0"
+```
+2. Install nginx gateway fabric:
+```bash
+helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway
+```
 
 # Development
 ```bash
@@ -74,4 +57,20 @@ sops --decrypt secrets.enc.yaml | kubectl apply -f -
 #export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 export KUBECONFIG=~/.kube/config
 ```
+
+# helm dependencies
+```bash
+helm repo add fluent https://fluent.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo add minio https://charts.min.io/
+helm repo add traefik https://traefik.github.io/charts
+helm dependency update ./helm
+```
+
+# Configure kubectl
+```bash
+az aks get-credentials --resource-group solo-rg --name solo-aks
+# TODO: configure terraform
+```
+
 
