@@ -1,8 +1,6 @@
-webrtc:
-  name: solo
-
-ingress:
+gateway:
   tlsSecret: solo.yon.si-tls
+  port: 443
 
 frontend:
   replicas: 1

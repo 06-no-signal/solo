@@ -43,3 +43,4 @@ spec:
   selector:
     app: {{ include "signalling.fullname" . }}
     instance: {{ .Release.Name }}
+
