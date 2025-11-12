@@ -46,11 +46,11 @@
 ## Install gateway controller
 
 nginx gateway controller installed in the cluster.
-1. Install gateway-api CRDs:
+1. Install gateway-api CRDs
 ```bash
 kubectl apply -k "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.1.0"
 ```
-2. Install nginx gateway fabric:
+2. Install nginx gateway fabric
 ```bash
 helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway
 ```
@@ -80,7 +80,6 @@ export KUBECONFIG=~/.kube/config
 helm repo add fluent https://fluent.github.io/helm-charts
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo add minio https://charts.min.io/
-helm repo add traefik https://traefik.github.io/charts
 helm dependency update ./helm
 ```
 

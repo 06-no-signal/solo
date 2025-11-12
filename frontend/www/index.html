@@ -55,26 +55,26 @@
         const config = {
             iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
         };
-
-        ws.onmessage = (message) => {
-            console.log("WebSocket message received:", message);
-            const signal = JSON.parse(message.data);
-            if (signal.event === "offer") {
-                handleOffer(signal.data, signal.source);
-            } else if (signal.event === "answer") {
-                handleAnswer(signal.data);
-            } else if (signal.event === "ice") {
-                handleIce(signal.data);
-            }
-        };
-
+ 
         async function setup() {
             username = document.querySelector('input[name="username"]').value;
             if (!username) {
                 username = crypto.randomUUID();
             }
 
-            ws = new WebSocket("wss://solo.yon.si/ws");
+            ws = new WebSocket("wss://signal.solo.yon.si");
+			ws.onmessage = (message) => {
+				console.log("WebSocket message received:", message);
+				const signal = JSON.parse(message.data);
+				if (signal.event === "offer") {
+					handleOffer(signal.data, signal.source);
+				} else if (signal.event === "answer") {
+					handleAnswer(signal.data);
+				} else if (signal.event === "ice") {
+					handleIce(signal.data);
+				}
+			};
+
             localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             document.getElementById("localVideo").srcObject = localStream;
         }

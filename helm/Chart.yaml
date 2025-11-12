@@ -4,8 +4,21 @@ description: Projekt za solo
 
 type: application
 
-# chart version
-version: 0.1.0
+version: 0.1.0 # chart version
+appVersion: "0.1.0" # app version
 
-# app version
-appVersion: "0.1.0"
+# subcharts
+dependencies:
+  - name: minio
+    version: "^5.4.0"
+    repository: "https://charts.min.io/"
+  - name: loki
+    version: "^6.45.2"
+    repository: "https://grafana.github.io/helm-charts"
+  - name: fluent-bit
+    version: "^0.54.0"
+    repository: "https://fluent.github.io/helm-charts"
+  - name: grafana
+    version: "^10.1.4"
+    repository: "https://grafana.github.io/helm-charts"
+

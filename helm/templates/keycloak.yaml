@@ -131,3 +131,21 @@ spec:
       port: 5432
       targetPort: 5432
   type: ClusterIP
+
+---
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "gateway.route" . }}-keycloak
+spec:
+  hostnames:
+    - {{ .Values.keycloak.host }}
+  parentRefs:
+    - name: {{ include "gateway.fullname" . }}
+  rules:
+    - backendRefs:
+        - name: {{ include "keycloak.fullname" . }}
+          port: {{ .Values.keycloak.port }}
+
+

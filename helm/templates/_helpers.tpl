@@ -1,5 +1,5 @@
 {{- define "fullname" -}}
-{{- printf "%s-%s" .Release.Name .Chart.Name -}}
+{{- printf "%s" .Release.Name -}}
 {{- end -}}
 
 
@@ -13,6 +13,14 @@
 
 {{- define "keycloak.fullname" -}}
 {{- printf "%s-keycloak" (include "fullname" .) -}}
+{{- end -}}
+
+{{- define "grafana.fullname" -}}
+{{- printf "%s-grafana" (include "fullname" .) -}}
+{{- end -}}
+
+{{- define "loki.fullname" -}}
+{{- printf "%s-loki" (include "fullname" .) -}}
 {{- end -}}
 
 {{- define "ingress.fullname" -}}
@@ -102,3 +110,5 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "signalling.ws.uri" -}}
 {{- printf "wss://%s:%s/%s" .Values.signalling.host .Values.signalling.port .Values.signalling.ws.path -}}
 {{- end -}}
+
+

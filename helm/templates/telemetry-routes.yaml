@@ -1,0 +1,46 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "gateway.route" . }}-grafana
+spec:
+  hostnames:
+    - {{ .Values.grafana.host }}
+  parentRefs:
+    - name: {{ include "gateway.fullname" . }}
+  rules:
+    - backendRefs:
+        - name: {{ include "grafana.fullname" . }}
+          port: 80
+
+---
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "gateway.route" . }}-loki
+spec:
+  hostnames:
+    - {{ .Values.loki.host }}
+  parentRefs:
+    - name: {{ include "gateway.fullname" . }}
+  rules:
+    - backendRefs:
+        - name: {{ include "loki.fullname" . }}-gateway
+          port: 80
+
+---
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "gateway.route" . }}-minio
+spec:
+  hostnames:
+    - {{ .Values.minio.host }}
+  parentRefs:
+    - name: {{ include "gateway.fullname" . }}
+  rules:
+    - backendRefs:
+        - name: {{ .Values.minio.fullnameOverride }}-console
+          port: 9001
+

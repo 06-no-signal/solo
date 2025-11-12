@@ -18,9 +18,10 @@ struct Signal {
 
 #[tokio::main]
 async fn main() {
+    println!("Starting signalling server");
     let clients: Clients = Arc::new(Mutex::new(HashMap::new()));
 
-    let ws_route = warp::path("ws")
+    let ws_route = warp::path::end()
         .and(warp::ws())
         .and(with_clients(clients.clone()))
         .map(move |ws: warp::ws::Ws, clients| {
