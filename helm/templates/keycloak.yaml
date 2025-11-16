@@ -11,7 +11,9 @@ spec:
       name: http
   selector: {{- include "keycloak.selectorLabels" . | nindent 4 }}
   type: ClusterIP
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -21,7 +23,9 @@ spec:
   selector: {{- include "keycloak.selectorLabels" . | nindent 4 }}
   clusterIP: None
   type: ClusterIP
+
 ---
+
 apiVersion: apps/v1
 # Use a stateful setup to ensure that for a rolling update Pods are restarted with a rolling strategy one-by-one.
 # This prevents losing in-memory information stored redundantly in two Pods.
@@ -72,7 +76,9 @@ spec:
             failureThreshold: 3              
           resources:
             {{- toYaml .Values.keycloak.resources | nindent 12 }}
+
 ---
+
 # This is deployment of PostgreSQL with an ephemeral storage for testing: Once the Pod stops, the data is lost.
 # For a production setup, replace it with a database setup that persists your data.
 apiVersion: apps/v1
@@ -110,7 +116,9 @@ spec:
       volumes:
         - name: postgres-data
           emptyDir: {}
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:

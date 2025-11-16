@@ -38,25 +38,25 @@
 {{ include "frontend.selectorLabels" . }}
 app.kubernetes.io/component: frontend-server
 {{ include "common.metadataLabels" . }}
-{{- end}}
+{{- end }}
 
 {{- define "signalling.labels" -}}
 {{ include "signalling.selectorLabels" . }}
 app.kubernetes.io/component: WebRTC-signalling-server
 {{ include "common.metadataLabels" . }}
-{{- end}}
+{{- end }}
 
 {{- define "keycloak.labels" -}}
 {{ include "keycloak.selectorLabels" . }}
 app.kubernetes.io/component: authentication-server
 {{ include "common.metadataLabels" . }}
-{{- end}}
+{{- end }}
 
 {{- define "postgres.labels" -}}
 {{ include "postgres.selectorLabels" . }}
 {{ include "common.metadataLabels" . }}
 app.kubernetes.io/component: auth-database
-{{- end}}
+{{- end }}
 
 {{- define "common.labels" -}}
 {{ include "common.selectorLabels" . }}
@@ -76,22 +76,22 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- define "frontend.selectorLabels" -}}
 app.kubernetes.io/name: frontend
 {{ include "common.selectorLabels" .}}
-{{- end}}
+{{- end }}
 
 {{- define "signalling.selectorLabels" -}}
 app.kubernetes.io/name: signalling
 {{ include "common.selectorLabels" .}}
-{{- end}}
+{{- end }}
 
 {{- define "keycloak.selectorLabels" -}}
 app.kubernetes.io/name: keycloak
 {{ include "common.selectorLabels" .}}
-{{- end}}
+{{- end }}
 
 {{- define "postgres.selectorLabels" -}}
 app.kubernetes.io/name: postgres
 {{ include "common.selectorLabels" . }}
-{{- end}}
+{{- end }}
 
 {{- define "common.selectorLabels" -}}
 app.kubernetes.io/part-of: {{ include "fullname" . }}

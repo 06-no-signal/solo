@@ -6,8 +6,13 @@ spec:
   gatewayClassName: nginx
   listeners:
     - name: https-listener
-      protocol: HTTP
+      protocol: HTTPS
       port: {{ .Values.gateway.port }}
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: {{ .Values.gateway.tlsSecret }}
       allowedRoutes:
         namespaces:
           from: All

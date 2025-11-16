@@ -1,10 +1,10 @@
 gateway:
-  tlsSecret: solo.localtest.me-tls
-  port: 8080
+  tlsSecret: solo.yon.si-tls
+  port: 443
 
 frontend:
   replicas: 1
-  host: solo.localtest.me
+  host: solo.yon.si
   image:
     name: plojyon/solo-frontend
     tag: latest
@@ -17,7 +17,7 @@ frontend:
 
 signalling:
   replicas: 1
-  host: solo.localtest.me
+  host: signal.solo.yon.si
   ws:
     path: ws
     port: 3000
@@ -32,7 +32,7 @@ signalling:
 
 keycloak:
   replicas: 1
-  host: auth.solo.localtest.me
+  host: auth.solo.yon.si
   port: 8080
   image:
     name: quay.io/keycloak/keycloak
