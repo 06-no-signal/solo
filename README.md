@@ -61,10 +61,17 @@ kubectl apply -k "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.1.0"
 ```bash
 helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway
 ```
-3. Install TLS secrets
+3. Install the CloudNativePG operator:
+```bash
+kubectl apply --server-side -f \
+  https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.27/releases/cnpg-1.27.1.yaml
+```
+
+4. Install secrets
 ```bash
 sops --decrypt secrets.enc.yaml | kubectl apply -f -
 ```
+
 
 ## Development
 ```bash
