@@ -1,0 +1,55 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "cluster.app.fullname" .}}
+spec:
+  instances: 2
+
+  # Example of rolling update strategy:
+  # - unsupervised: automated update of the primary once all
+  #                 replicas have been upgraded (default)
+  # - supervised: requires manual supervision to perform
+  #               the switchover of the primary
+  primaryUpdateStrategy: unsupervised
+
+  superuserSecret:
+    name: {{ .Values.databases.app.superuserSecret }}
+
+  bootstrap:
+    initdb:
+      database: solo
+      owner: app
+      secret:
+        name: {{ .Values.databases.app.secret }}
+
+  # Require 1Gi of space
+  storage:
+    size: 1Gi
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "cluster.keycloak.fullname" .}}
+spec:
+  instances: 2
+
+  # Example of rolling update strategy:
+  # - unsupervised: automated update of the primary once all
+  #                 replicas have been upgraded (default)
+  # - supervised: requires manual supervision to perform
+  #               the switchover of the primary
+  primaryUpdateStrategy: unsupervised
+
+  superuserSecret:
+    name: {{ .Values.databases.keycloak.superuserSecret }}
+
+  bootstrap:
+    initdb:
+      database: keycloak
+      owner: keycloak
+      secret:
+        name: {{ .Values.databases.keycloak.secret }}
+
+  # Require 1Gi of space
+  storage:
+    size: 1Gi
