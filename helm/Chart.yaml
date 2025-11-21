@@ -21,4 +21,6 @@ dependencies:
   - name: grafana
     version: "^10.1.4"
     repository: "https://grafana.github.io/helm-charts"
-
+  - name: prometheus
+    version: "^27.45.0"
+    repository: "https://prometheus-community.github.io/helm-charts"

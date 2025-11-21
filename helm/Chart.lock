@@ -1,7 +1,4 @@
 dependencies:
-- name: traefik
-  repository: https://traefik.github.io/charts
-  version: 37.2.0
 - name: minio
   repository: https://charts.min.io/
   version: 5.4.0
@@ -13,6 +10,9 @@ dependencies:
   version: 0.54.0
 - name: grafana
   repository: https://grafana.github.io/helm-charts
-  version: 10.1.4
-digest: sha256:368d100d6e384627a6a30f74ffacac99b4ff8a6958112e2a40acbac2a8ad17ed
-generated: "2025-11-09T12:03:01.943975325+01:00"
+  version: 10.2.0
+- name: prometheus
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 27.46.0
+digest: sha256:62552993ab36a0d6f205c7d5d79081ee35858f0c7e0d1d8257bc9fc6197f64db
+generated: "2025-11-24T14:47:48.052007226+01:00"

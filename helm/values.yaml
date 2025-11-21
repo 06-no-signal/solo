@@ -330,3 +330,10 @@ grafana:
           type: loki
           url: http://loki-read:3100
           isDefault: true
+        - name: Prometheus
+          type: prometheus
+          url: http://prometheus
+
+prometheus:
+  server:
+    fullnameOverride: prometheus
