@@ -130,6 +130,15 @@ fluent-bit:
           Mem_Buf_Limit     5MB
           Skip_Long_Lines   Off
 
+    filters: |
+      [Filter]
+          Name    kubernetes
+          Match    *
+          Merge_Log    true
+          K8S-Logging.Parser    true
+          Labels    true
+          Annotations    true
+
     outputs: |
       [OUTPUT]
           Name loki
@@ -137,8 +146,7 @@ fluent-bit:
           Host loki-write-stupid
           Port 3100
           Retry_Limit False
-          Auto_Kubernetes_Labels True
-          Label_Keys container_name,pod_name,namespace_name
+          Auto_Kubernetes_Labels true
 
       [OUTPUT]
           Name loki
@@ -146,8 +154,7 @@ fluent-bit:
           Host loki-write-stupid
           Port 3100
           Retry_Limit False
-          Auto_Kubernetes_Labels True
-          Label_Keys container_name,pod_name,namespace_name
+          Auto_Kubernetes_Labels true
 
 loki:
   host: loki.solo.yon.si
