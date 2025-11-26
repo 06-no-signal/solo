@@ -134,20 +134,29 @@ fluent-bit:
       [OUTPUT]
           Name loki
           Match kube.*
-          Host loki-write
+          Host loki-write-stupid
           Port 3100
           Retry_Limit False
+          Auto_Kubernetes_Labels True
+          Label_Keys container_name,pod_name,namespace_name
 
       [OUTPUT]
           Name loki
           Match host.*
-          Host loki-write
+          Host loki-write-stupid
           Port 3100
           Retry_Limit False
+          Auto_Kubernetes_Labels True
+          Label_Keys container_name,pod_name,namespace_name
 
 loki:
   host: loki.solo.yon.si
+  # Stupid fucker can't read
+  #fullnameOverride: loki
   loki:
+    commonConfig:
+      # Note: You must specify commonConfig.replication_factor: 1 if you are only using 1 replica, otherwise requests will fail.
+      replication_factor: 1
     auth_enabled: false
     schemaConfig:
       configs:
@@ -171,108 +180,58 @@ loki:
         region: us-east-1
         s3ForcePathStyle: true
         insecure: true
-    ingester:
-      chunk_encoding: snappy
-    querier:
-      max_concurrent: 1
     pattern_ingester:
       enabled: true
     limits_config:
       allow_structured_metadata: true
       volume_enabled: true
+    ruler:
+      enable_api: true
 
-  deploymentMode: SimpleScalable
+  deploymentMode: SingleBinary
 
+  singleBinary:
+    replicas: 1
+    extraArgs:
+      - '-config.expand-env=true'
+    extraEnv:
+      - name: S3_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: minio
+            key: rootUser
+      - name: S3_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: minio
+            key: rootPassword
+
+  # Zero out replica counts of other deployment modes
   backend:
-    replicas: 1
-    extraArgs:
-      - '-config.expand-env=true'
-    extraEnv:
-      - name: S3_USERNAME
-        valueFrom:
-          secretKeyRef:
-            name: minio
-            key: rootUser
-      - name: S3_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: minio
-            key: rootPassword
-    resources:
-      limits:
-        cpu: 500m
-        memory: 1Gi
-      requests:
-        cpu: 250m
-        memory: 512Mi
-  read:
-    replicas: 2
-    # Disable podAntiAffinity because of running on single-node
-    affinity: {}
-    resources:
-      limits:
-        cpu: 100m
-        memory: 512Mi
-      requests:
-        cpu: 50m
-        memory: 128Mi
-    extraArgs:
-      - '-config.expand-env=true'
-    extraEnv:
-      - name: S3_USERNAME
-        valueFrom:
-          secretKeyRef:
-            name: minio
-            key: rootUser
-      - name: S3_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: minio
-            key: rootPassword
-  write:
-    replicas: 2
-    # Disable podAntiAffinity because of running on single-node
-    affinity: {}
-    resources:
-      limits:
-        cpu: 100m
-        memory: 512Mi
-      requests:
-        cpu: 50m
-        memory: 128Mi
-    extraArgs:
-      - '-config.expand-env=true'
-    extraEnv:
-      - name: S3_USERNAME
-        valueFrom:
-          secretKeyRef:
-            name: minio
-            key: rootUser
-      - name: S3_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: minio
-            key: rootPassword
-  chunksCache:
-    replicas: 1
-    resources:
-      limits:
-        cpu: 100m
-        memory: 512Mi
-      requests:
-        cpu: 50m
-        memory: 128Mi
-  gateway:
-    replicas: 1
-    resources:
-      limits:
-        cpu: 100m
-        memory: 512Mi
-      requests:
-        cpu: 50m
-        memory: 128Mi
-  enterpriseGateway:
     replicas: 0
+  read:
+    replicas: 0
+  write:
+    replicas: 0
+  ingester:
+    replicas: 0
+  querier:
+    replicas: 0
+  queryFrontend:
+    replicas: 0
+  queryScheduler:
+    replicas: 0
+  distributor:
+    replicas: 0
+  compactor:
+    replicas: 0
+  indexGateway:
+    replicas: 0
+  bloomCompactor:
+    replicas: 0
+  bloomGateway:
+    replicas: 0
+
 
 grafana:
   host: grafana.solo.yon.si
@@ -291,7 +250,7 @@ grafana:
       datasources:
         - name: Loki
           type: loki
-          url: http://loki-read:3100
+          url: http://loki-read-stupid
           isDefault: true
         - name: Prometheus
           type: prometheus

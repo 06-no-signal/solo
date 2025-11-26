@@ -1,0 +1,45 @@
+# Source: solo/charts/loki/templates/gateway/service-gateway.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-read-stupid
+  labels:
+    stupid: "yes"
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-metrics-stupid
+      port: 80
+      targetPort: http-metrics
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: gateway
+
+---
+
+# Source: solo/charts/loki/templates/single-binary/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-write-stupid
+  namespace: default
+  labels:
+    stupid: "yes"
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-metrics-stupid
+      port: 3100
+      targetPort: http-metrics
+      protocol: TCP
+    - name: grpc-stupid
+      port: 9095
+      targetPort: grpc
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: single-binary
+
