@@ -10,13 +10,6 @@ frontend:
     tag: latest
     pullPolicy: Always
   port: 8080
-  resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 50m
-      memory: 64Mi
 
 signalling:
   replicas: 1
@@ -27,13 +20,6 @@ signalling:
     name: plojyon/solo-signal
     tag: latest
     pullPolicy: Always
-  resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
 
 keycloak:
   replicas: 1
@@ -85,15 +71,6 @@ keycloak:
     value: 'keycloak'
   - name: 'KC_DB_USERNAME'
     value: 'keycloak'
-  resources:
-    limits:
-      cpu: 2000m
-      memory: 2000Mi
-    requests:
-      cpu: 500m
-      memory: 1700Mi
-      cpu: 50m
-      memory: 64Mi
 
 minio:
   host: minio.solo.yon.si
@@ -103,10 +80,10 @@ minio:
     enabled: false
   resources:
     limits:
-      cpu: 100m
-      memory: 512Mi
+      cpu: 200m
+      memory: 1Gi
     requests:
-      cpu: 50m
+      cpu: 100m
       memory: 512Mi
   buckets:
     - name: loki-data
@@ -127,13 +104,6 @@ fluent-bit:
     stdout:
       - name: stdout
         match: "*"
-  resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 50m
-      memory: 64Mi
 
   # See Lua script configuration example in README.md
   luaScripts: {}
@@ -306,13 +276,6 @@ loki:
 
 grafana:
   host: grafana.solo.yon.si
-  resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 50m
-      memory: 64Mi
   persistence:
     # type: pvc
     enabled: false
