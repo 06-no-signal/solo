@@ -1,2 +1,6 @@
 TODO: write readme
 this text will be displayed when running `helm install`
+
+`
+kubectl get secret keycloak-admin-secret -o jsonpath="{.data.password}" | base64 --decode
+`
