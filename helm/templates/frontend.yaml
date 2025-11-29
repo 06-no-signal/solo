@@ -23,6 +23,18 @@ spec:
           env:
             - name: SIGNALLING_SERVER_URL
               value: {{ .Values.signalling.uri | quote }}
+            - name: NEXT_PUBLIC_OIDC_CLIENT_ID
+              value: {{ .Values.frontend.keycloak.clientId | quote }}
+            - name: NEXT_PUBLIC_KEYCLOAK_SECRET
+              value: {{ .Values.frontend.keycloak.clientSecret | quote }}
+            - name: NEXT_PUBLIC_OIDC_AUTHORITY_URL
+              value: {{ .Values.frontend.keycloak.authorityUrl | quote }}
+            - name: NEXT_PUBLIC_FRONTEND_PORT
+              value: {{ .Values.gateway.port | quote }}
+            - name: NEXT_PUBLIC_FRONTEND_BASE_URL
+              value: {{ printf "https://%s" .Values.frontend.host | quote }}
+            - name: NEXT_PUBLIC_JWT_AUDIENCE
+              value: {{ .Values.frontend.keycloak.audience | quote }}
 
 ---
 
@@ -55,5 +67,3 @@ spec:
     - backendRefs:
         - name: {{ include "frontend.fullname" . }}
           port: {{ .Values.frontend.port }}
-
-
