@@ -30,7 +30,7 @@
 - [x] Helm charts
 - [x] Namestitev v oblak
 - [ ] »Serverless« funkcija
-- [ ] Zunanji API
+- [x] Zunanji API
 - [ ] Večnajemništvo (ang. multitenancy)
 - [ ] Preverjanje zdravja
 - [ ] GraphQL in gRPC
