@@ -10,10 +10,20 @@ frontend:
     tag: latest
     pullPolicy: Always
   port: 8080
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+  keycloak:
+    clientId: Frontend
+    authorityUrl: https://auth.solo.yon.si/realms/master
+    audience: solo-backend
+    
 
 signalling:
   replicas: 1
   host: signal.solo.yon.si
+  uri: signal.solo.yon.si/ws
   ws:
     port: 3000
   image:
@@ -42,7 +52,7 @@ databases:
 keycloak:
   replicas: 1
   host: auth.solo.yon.si
-  port: 8080
+  port: "8080"
   image:
     name: quay.io/keycloak/keycloak
     tag: "26.4.4"
