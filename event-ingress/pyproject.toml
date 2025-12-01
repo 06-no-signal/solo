@@ -1,0 +1,10 @@
+[project]
+name = "event-ingress"
+version = "1.0.0"
+description = "A WebSocket-Kafka bridge for real-time communication."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "aiokafka>=0.12.0",
+    "fastapi>=0.123.0",
+]
