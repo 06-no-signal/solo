@@ -15,13 +15,14 @@
 
 ### Why Solo?
 
-| Feature | Solo | Microsoft Teams | Zoom | Discord |
-|---------|------|-----------------|------|---------|
-| **Homie Approval** | 🟢 💯% | 🔴 0% | 🟡 50% | 🟡 75% |
+| Feature            | Solo   | Microsoft Teams | Zoom   | Discord |
+| ------------------ | ------ | --------------- | ------ | ------- |
+| **Homie Approval** | 🟢 💯% | 🔴 0%           | 🟡 50% | 🟡 75%  |
 
 ---
 
 ## Zahteve
+
 - [x] Repozitorij
 - [x] Mikrostoritve in »cloud-native« aplikacija
 - [ ] Dokumentacija
@@ -53,27 +54,36 @@
 ## Install gateway controller
 
 nginx gateway controller installed in the cluster.
+
 1. Install gateway-api CRDs
+
 ```bash
 kubectl apply -k "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.1.0"
 ```
+
 2. Install nginx gateway fabric
+
 ```bash
 helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway
 ```
+
 3. Install the CloudNativePG operator:
+
 ```bash
 kubectl apply --server-side -f \
   https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.27/releases/cnpg-1.27.1.yaml
 ```
 
 4. Install secrets
+
 ```bash
 sops --decrypt secrets.enc.yaml | kubectl apply -f -
 ```
 
+5. Import the keycloak client from `keycloak/frontend.json`
 
 ## Development
+
 ```bash
 # Build and deploy frontend image
 cd client
@@ -90,6 +100,7 @@ export KUBECONFIG=~/.kube/config
 ```
 
 ## helm dependencies
+
 ```bash
 helm repo add fluent https://fluent.github.io/helm-charts
 helm repo add grafana https://grafana.github.io/helm-charts
@@ -98,9 +109,8 @@ helm dependency update ./helm
 ```
 
 ## Configure kubectl
+
 ```bash
 az aks get-credentials --resource-group solo-rg --name solo-aks
 # TODO: configure terraform
 ```
-
-
