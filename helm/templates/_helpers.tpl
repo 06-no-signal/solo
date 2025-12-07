@@ -37,11 +37,8 @@
 {{- define "gateway.fullname" -}}
 {{- printf "%s-gateway" (include "fullname" .) -}}
 {{- end -}}
-{{- define "gateway.main.route" -}}
-{{- printf "%s-main-route" (include "gateway.fullname" .) -}}
-{{- end -}}
-{{- define "gateway.auth.route" -}}
-{{- printf "%s-auth-route" (include "gateway.fullname" .) -}}
+{{- define "gateway.route" -}}
+{{- printf "%s-route" (include "gateway.fullname" .) -}}
 {{- end -}}
 {{- define "gateway.port" -}}
 {{- printf "%s-port" (include "gateway.fullname" .) -}}
