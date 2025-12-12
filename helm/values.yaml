@@ -11,9 +11,17 @@ frontend:
     pullPolicy: Always
   port: 8080
 
+eventIngress:
+  replicas: 1
+  host: ws.solo.yon.si
+  image:
+    name: plojyon/solo-event-ingress
+    tag: latest
+    pullPolicy: Always
+  port: 8000
+
 signalling:
   replicas: 1
-  host: signal.solo.yon.si
   ws:
     port: 3000
   image:
