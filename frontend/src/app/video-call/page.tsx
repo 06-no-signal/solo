@@ -1,202 +1,111 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useLocalStream } from "@/components/domain/LocalStreamProvider";
+import { useWS } from "@/components/domain/WebsocketProvider";
+import { Button } from "@/components/ui/button";
+import { useRTCCall } from "@/hooks/use-RTC-call";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { io } from "socket.io-client";
 
 export default () => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const localVideoRef = useRef<HTMLVideoElement>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const room = "room1";
+
+  const ws = useWS();
+  const localStream = useLocalStream();
+  const rtc = useRTCCall(room);
+
+  const [isBeingCalled, setIsBeingCalled_] = useState<string | undefined>(
+    undefined
+  );
+  const isBeingCalledRef = useRef<string | undefined>(undefined);
+  const [isAwaitingAnswer, setIsAwaitingAnswer_] = useState<string | undefined>(
+    undefined
+  );
+  const isAwaitingAnswerRef = useRef<string | undefined>(undefined);
+
+  const allVideoStreams = useMemo(
+    () =>
+      localStream
+        ? [localStream, ...rtc.remoteVideoStreams]
+        : rtc.remoteVideoStreams,
+    [localStream, rtc.remoteVideoStreams]
+  );
+
+  const setIsAwaitingAnswer = (room: string | undefined) => {
+    console.log("Setting isAwaitingAnswer to:", room);
+    isAwaitingAnswerRef.current = room;
+    setIsAwaitingAnswer_(room);
+  };
+
+  const setIsBeingCalled = (room: string | undefined) => {
+    isBeingCalledRef.current = room;
+    setIsBeingCalled_(room);
+  };
 
   useEffect(() => {
-    let ws: any;
-    let username: any;
-    let localStream: any;
-    let peerConnection: any;
-    const config = {
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    };
-
-    async function setup() {
-      username = inputRef.current?.value;
-      if (!username) {
-        username = crypto.randomUUID();
-      }
-
-      ws = new WebSocket(process.env.SIGNALLING_SERVER_URL!);
-      ws.onmessage = (message: any) => {
-        console.log("WebSocket message received:", message);
-        const signal = JSON.parse(message.data);
-        if (signal.event === "offer") {
-          handleOffer(signal.data, signal.source);
-        } else if (signal.event === "answer") {
-          handleAnswer(signal.data);
-        } else if (signal.event === "ice") {
-          handleIce(signal.data);
-        }
-      };
-      localStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-
-      if (localVideoRef.current) {
-        localVideoRef.current.srcObject = localStream;
-      }
-    }
-
-    async function startCall() {
-      const target = "TODO";
-      if (!target) {
-        alert("No target selected.");
+    ws.on("start-call-req", (data: any) => {
+      setIsBeingCalled(data.room);
+    });
+    ws.on("start-call-acc", async (data: any) => {
+      if (data.room !== isAwaitingAnswerRef.current) {
+        console.error("Room mismatch:", data.room, isAwaitingAnswerRef.current);
         return;
       }
+      setIsAwaitingAnswer(undefined);
+      rtc.startCall();
+    });
 
-      peerConnection = new RTCPeerConnection(config);
-      peerConnection.onicecandidate = (event: any) => {
-        console.log("Offerrer ICE candidate");
-        if (event.candidate) {
-          ws.send(
-            JSON.stringify({
-              event: "ice",
-              data: JSON.stringify(event.candidate),
-              target: target,
-            })
-          );
-        }
-      };
-      peerConnection.ontrack = (event: any) => {
-        console.log("Track event:", event);
-        if (document?.getElementById("remoteVideo")) {
-          (
-            document.getElementById("remoteVideo") as HTMLVideoElement
-          ).srcObject = event.streams[0];
-        }
-      };
+    return () => {
+      ws.off("start-call-req");
+      ws.off("start-call-acc");
+    };
+  }, [ws]);
 
-      localStream.getTracks().forEach((track: any) => {
-        peerConnection.addTrack(track, localStream);
-      });
-
-      const offer = await peerConnection.createOffer();
-      await peerConnection.setLocalDescription(offer);
-
-      ws.send(
-        JSON.stringify({
-          event: "offer",
-          data: JSON.stringify(offer),
-          target: target,
-        })
-      );
+  const acceptCall = async () => {
+    if (isBeingCalled) {
+      console.log("Accepting call from:", isBeingCalled);
+      await ws.emit("join-room", isBeingCalled);
+      ws.emit("start-call-acc", { room: isBeingCalled });
+      setIsBeingCalled(undefined);
     }
+  };
 
-    async function handleOffer(offer: any, target: any) {
-      console.log("Handling offer:", offer);
-      peerConnection = new RTCPeerConnection(config);
-      peerConnection.onicecandidate = (event: any) => {
-        console.log("Accepter ICE candidate");
-        if (event.candidate) {
-          ws.send(
-            JSON.stringify({
-              event: "ice",
-              data: JSON.stringify(event.candidate),
-              target: target,
-            })
-          );
-        }
-      };
-      peerConnection.ontrack = (event: any) => {
-        if (remoteVideoRef.current) {
-          remoteVideoRef.current.srcObject = event.streams[0];
-        }
-      };
+  async function startCall() {
+    console.log(ws.id);
+    await ws.emit("join-room", room);
+    console.log("Joining room:", room);
+    ws.emit("start-call-req", { room: room });
+    setIsAwaitingAnswer(room);
+  }
 
-      localStream.getTracks().forEach((track: any) => {
-        peerConnection.addTrack(track, localStream);
-      });
-
-      await peerConnection.setRemoteDescription(
-        new RTCSessionDescription(JSON.parse(offer))
-      );
-      const answer = await peerConnection.createAnswer();
-      await peerConnection.setLocalDescription(answer);
-
-      console.log("Sending answer:", answer, target);
-      ws.send(
-        JSON.stringify({
-          event: "answer",
-          data: JSON.stringify(answer),
-          target: target,
-        })
-      );
-    }
-
-    function handleAnswer(answer: any) {
-      console.log("Handling answer");
-      peerConnection.setRemoteDescription(
-        new RTCSessionDescription(JSON.parse(answer))
-      );
-    }
-
-    function handleIce(candidate: any) {
-      console.log("Remote ICE candidate");
-      peerConnection.addIceCandidate(
-        new RTCIceCandidate(JSON.parse(candidate))
-      );
-    }
-    function endCall() {
-      if (localStream) {
-        localStream.getTracks().forEach((track: any) => track.stop()); // Stop all tracks (audio & video)
-      }
-
-      if (peerConnection) {
-        peerConnection.close(); // Close WebRTC connection
-        peerConnection = null;
-      }
-
-      // document.getElementById("localVideo").srcObject = null; // Remove video feed
-      // document.getElementById("remoteVideo").srcObject = null;
-
-      if (localVideoRef.current) {
-        localVideoRef.current.srcObject = null;
-      }
-      if (remoteVideoRef.current) {
-        remoteVideoRef.current.srcObject = null;
-      }
-    }
-    document.getElementById("setup")?.addEventListener("click", setup);
-    document.getElementById("startCall")?.addEventListener("click", startCall);
-    document.getElementById("endCall")?.addEventListener("click", endCall);
-  }, []);
   return (
     <>
       <h1>Solo</h1>
-      <div>
-        <span>
-          Username:{" "}
-          <input
-            type="text"
-            name="username"
-            placeholder="(leave blank to stay anonymous)"
-          />
-        </span>
-        <button id="setup">Set up</button>
+
+      {isBeingCalled && (
+        <div>
+          Incoming call from {isBeingCalled}{" "}
+          <Button onClick={acceptCall}>Accept Call</Button>
+        </div>
+      )}
+
+      {isAwaitingAnswer && <div>Calling {isAwaitingAnswer}...</div>}
+
+      <div className="flex flex-row gap-4">
+        <Button onClick={startCall}>Start Call</Button>
+        <Button onClick={rtc.endCall}>End Call</Button>
       </div>
 
-      <div>
-        <button id="startCall" disabled>
-          Start Call
-        </button>
-        <button id="endCall" disabled>
-          End Call
-        </button>
-      </div>
-
-      <div className="video-grid">
-        <div className="video-container">
-          <video id="localVideo" autoPlay muted></video>
-        </div>
-        <div className="video-container">
-          <video id="remoteVideo" autoPlay></video>
-        </div>
+      <div className="p-4 flex flex-row gap-4 align-stretch">
+        {allVideoStreams.map((stream, index) => (
+          <div key={index} className="overflow-hidden rounded-md inline-block">
+            <video
+              autoPlay
+              ref={(ref) => {
+                if (ref) ref.srcObject = stream;
+              }}
+            ></video>
+          </div>
+        ))}
       </div>
     </>
   );

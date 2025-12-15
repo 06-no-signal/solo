@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ConfiguredAuthProvider } from "./auth/authHandlers";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "./AppSidebar";
+import { WSProvider } from "@/components/domain/WebsocketProvider";
+import { CallReciever } from "@/components/domain/CallReceiver";
+import { env, PublicEnvScript } from "next-runtime-env";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,10 +30,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <PublicEnvScript />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ConfiguredAuthProvider>{children}</ConfiguredAuthProvider>
+        <SidebarProvider>
+          <AppSidebar />
+          <main className="w-full">
+            <SidebarTrigger />
+            <ConfiguredAuthProvider>
+              <WSProvider url={env("NEXT_PUBLIC_SIGNALLING_SERVER_URL")}>
+                <CallReciever>{children}</CallReciever>
+              </WSProvider>
+            </ConfiguredAuthProvider>
+          </main>
+        </SidebarProvider>
       </body>
     </html>
   );

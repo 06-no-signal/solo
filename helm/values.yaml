@@ -23,11 +23,11 @@ frontend:
 signalling:
   replicas: 1
   host: signal.solo.yon.si
-  uri: signal.solo.yon.si/ws
+  uri: https://signal.solo.yon.si
   ws:
     port: 3000
   image:
-    name: plojyon/solo-signal
+    name: jakic12/solo-signal
     tag: latest
     pullPolicy: Always
 

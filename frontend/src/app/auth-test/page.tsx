@@ -1,8 +1,15 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { privateFetch } from "../auth/authHandlers";
 
-export default async () => {
-  const res = await privateFetch("https://solo.yon.si/api/restricted");
-  const data = await res.json();
+export default () => {
+  const [data, setData] = useState<any>(null);
+  useEffect(() => {
+    privateFetch("https://solo.yon.si/api/restricted").then((res) =>
+      res.json().then((data) => setData(JSON.stringify(data, null, 2)))
+    );
+  }, []);
 
-  return <pre>{JSON.stringify(data, null, 2)}</pre>;
+  return <pre>{data}</pre>;
 };

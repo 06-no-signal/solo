@@ -21,12 +21,10 @@ spec:
           resources:
             {{- toYaml .Values.frontend.resources | nindent 12 }}
           env:
-            - name: SIGNALLING_SERVER_URL
+            - name: NEXT_PUBLIC_SIGNALLING_SERVER_URL
               value: {{ .Values.signalling.uri | quote }}
             - name: NEXT_PUBLIC_OIDC_CLIENT_ID
               value: {{ .Values.frontend.keycloak.clientId | quote }}
-            - name: NEXT_PUBLIC_KEYCLOAK_SECRET
-              value: {{ .Values.frontend.keycloak.clientSecret | quote }}
             - name: NEXT_PUBLIC_OIDC_AUTHORITY_URL
               value: {{ .Values.frontend.keycloak.authorityUrl | quote }}
             - name: NEXT_PUBLIC_FRONTEND_PORT
