@@ -2,13 +2,8 @@
 
 import React from "react";
 import { withAuthenticationRequired } from "react-oidc-context";
-import { AuthProvider, AuthProviderProps } from "react-oidc-context";
-import {
-  Log,
-  UserManager,
-  UserManagerSettings,
-  WebStorageStateStore,
-} from "oidc-client-ts";
+import { AuthProvider } from "react-oidc-context";
+import { Log, WebStorageStateStore } from "oidc-client-ts";
 import { FC, PropsWithChildren } from "react";
 import { env } from "next-runtime-env";
 

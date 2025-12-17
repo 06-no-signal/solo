@@ -4,7 +4,6 @@ import { useWS } from "@/components/domain/WebsocketProvider";
 import { Button } from "@/components/ui/button";
 import { useRTCCall } from "@/hooks/use-RTC-call";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { io } from "socket.io-client";
 
 export default () => {
   const room = "room1";
@@ -25,8 +24,11 @@ export default () => {
   const allVideoStreams = useMemo(
     () =>
       localStream
-        ? [localStream, ...rtc.remoteVideoStreams]
-        : rtc.remoteVideoStreams,
+        ? [
+            { str: localStream, isLocal: true },
+            ...rtc.remoteVideoStreams.map((x) => ({ str: x, isLocal: false })),
+          ]
+        : rtc.remoteVideoStreams.map((x) => ({ str: x, isLocal: false })),
     [localStream, rtc.remoteVideoStreams]
   );
 
@@ -99,9 +101,10 @@ export default () => {
         {allVideoStreams.map((stream, index) => (
           <div key={index} className="overflow-hidden rounded-md inline-block">
             <video
+              muted={stream.isLocal}
               autoPlay
               ref={(ref) => {
-                if (ref) ref.srcObject = stream;
+                if (ref) ref.srcObject = stream.str;
               }}
             ></video>
           </div>

@@ -38,7 +38,7 @@ export const WebsocketChat: FC<{
   }, [messages]);
 
   const sendMessage = () => {
-    ws.emit("chat", { message: input, target: roomId });
+    ws.emit("chat", { message: input, room: roomId });
     setInput("");
   };
 

@@ -34,10 +34,10 @@ export class WebrtcGateway implements OnGatewayInit {
   @SubscribeMessage('join-room')
   handleJoinRoom(
     @ConnectedSocket() client: Socket,
-    @MessageBody() roomId: string,
+    @MessageBody() payload: { room: string },
   ) {
-    client.join(roomId);
-    client.to(roomId).emit('peer-joined', client.id);
+    client.join(payload.room);
+    client.to(payload.room).emit('peer-joined', client.id);
   }
 
   @SubscribeMessage('start-call-req')

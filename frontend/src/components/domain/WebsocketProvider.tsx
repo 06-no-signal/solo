@@ -24,12 +24,17 @@ const WSStateContext = createContext<Socket | null>(null);
 
 function WSProvider({ children, url, postInit }: WSProviderProps): JSX.Element {
   const [ws, setWs] = useState<Socket | null>(null);
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     if (url) {
       const socket = io(url);
       postInit?.(socket);
       setWs(socket);
+
+      socket.on("connect", () => setConnected(true));
+      socket.on("disconnect", (reason) => setConnected(false));
+      socket.on("reconnect", () => setConnected(true));
 
       return () => {
         socket.close();
@@ -39,6 +44,10 @@ function WSProvider({ children, url, postInit }: WSProviderProps): JSX.Element {
 
   return (
     <WSStateContext.Provider value={ws}>
+      <div className="absolute bottom-0 right-0 p-4">
+        {connected && <div className="w-3 h-3 bg-green-500 rounded-full"></div>}
+        {!connected && <div className="w-3 h-3 bg-red-500 rounded-full"></div>}
+      </div>
       {ws ? children : <div></div>}
     </WSStateContext.Provider>
   );

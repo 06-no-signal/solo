@@ -38,8 +38,8 @@ export default function RootLayout({
       >
         <SidebarProvider>
           <AppSidebar />
-          <main className="w-full">
-            <SidebarTrigger />
+          <main className="w-full flex flex-col">
+            {/* <SidebarTrigger /> */}
             <ConfiguredAuthProvider>
               <WSProvider url={env("NEXT_PUBLIC_SIGNALLING_SERVER_URL")}>
                 <CallReciever>{children}</CallReciever>

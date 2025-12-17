@@ -4,7 +4,7 @@ import { LocalStreamProvider } from "@/components/domain/LocalStreamProvider";
 import { WebsocketChat } from "@/components/domain/WebsocketChat";
 import { useWS } from "@/components/domain/WebsocketProvider";
 import { Phone, PhoneCallIcon } from "lucide-react";
-import { redirect } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 import React from "react";
 
 export default function Page({
@@ -22,7 +22,7 @@ export default function Page({
         <Phone
           className="ml-2 cursor-pointer"
           onClick={() => {
-            redirect(`${roomId}/call?shouldStartCall=true`);
+            redirect(`${roomId}/call?shouldStartCall=true`, RedirectType.push);
           }}
         />
       </div>
