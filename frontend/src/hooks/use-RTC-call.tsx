@@ -98,5 +98,10 @@ export const useRTCCall = (room: string) => {
     }
   };
 
-  return { startCall, endCall, remoteVideoStreams };
+  return {
+    peerConnection: peerConnection.current,
+    startCall,
+    endCall,
+    remoteVideoStreams,
+  };
 };
