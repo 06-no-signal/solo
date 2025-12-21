@@ -31,6 +31,10 @@ signalling:
     tag: latest
     pullPolicy: Always
 
+rabbitmq:
+  host: rabbitmq.solo.yon.si
+  name: myrabbitmq
+
 databases:
   keycloak:
     adminSecret: keycloak-admin-secret

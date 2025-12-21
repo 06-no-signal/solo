@@ -8,5 +8,9 @@ Next steps:
 `kubectl get secret -l app=minio -o jsonpath="{.items[0].data.rootUser}" | base64 -d`
 `kubectl get secret -l app=minio -o jsonpath="{.items[0].data.rootPassword}" | base64 -d`
 
+- Acquire RabbitMQ credentials:
+`kubectl get secret myrabbitmq-default-user -o jsonpath='{.data.username}' | base64 --decode`
+`kubectl get secret myrabbitmq-default-user -o jsonpath='{.data.password}' | base64 --decode`
+
 - Acquire Keycloak admin password:
 `kubectl get secret keycloak-admin-secret -o jsonpath="{.data.password}" | base64 --decode`

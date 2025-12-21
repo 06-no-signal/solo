@@ -20,6 +20,21 @@ spec:
               name: ws
           resources:
             {{- toYaml .Values.signalling.resources | nindent 12 }}
+          env:
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.name }}-default-user
+                  key: username
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.name }}-default-user
+                  key: password
+            - name: RABBITMQ_URL
+              value: amqp://$(RABBITMQ_USER):$(RABBITMQ_PASSWORD)@{{ .Values.rabbitmq.name }}:5672
+            - name: PORT
+              value: "{{ .Values.signalling.ws.port }}"
 
 ---
 

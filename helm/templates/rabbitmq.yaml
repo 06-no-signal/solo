@@ -1,0 +1,22 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: {{ .Values.rabbitmq.name }}
+
+---
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "gateway.route" . }}-rabbitmq
+spec:
+  hostnames:
+    - {{ .Values.rabbitmq.host }}
+  parentRefs:
+    - name: {{ include "gateway.fullname" . }}
+  rules:
+    - backendRefs:
+        - name: {{ .Values.rabbitmq.name }}
+          port: 15672
+
+
