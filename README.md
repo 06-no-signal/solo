@@ -58,7 +58,7 @@ nginx gateway controller installed in the cluster.
 1. Install gateway-api CRDs
 
 ```bash
-kubectl apply -k "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.1.0"
+kubectl apply -k "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.4.0"
 ```
 
 2. Install nginx gateway fabric
@@ -70,8 +70,7 @@ helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namesp
 3. Install the CloudNativePG operator:
 
 ```bash
-kubectl apply --server-side -f \
-  https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.27/releases/cnpg-1.27.1.yaml
+kubectl apply --server-side -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.27/releases/cnpg-1.27.1.yaml
 ```
 
 4. Install secrets

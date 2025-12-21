@@ -25,7 +25,9 @@ spec:
   # Require 1Gi of space
   storage:
     size: 1Gi
+
 ---
+
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
