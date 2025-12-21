@@ -35,19 +35,19 @@
 - [ ] Večnajemništvo (ang. multitenancy)
 - [ ] Preverjanje zdravja
 - [ ] GraphQL in gRPC
-- [ ] Sporočilni sistemi
+- [x] Sporočilni sistemi
 - [ ] »Event sourcing« in CQRS
 - [x] Centralizirano beleženje dnevnikov
 - [x] Zbiranje metrik
 - [ ] Izolacija in toleranca napak
 - [ ] Upravljanje s konfiguracijo
 - [x] Grafični vmesnik
-- [ ] Vmesna predstavitev
+- [x] Vmesna predstavitev
 - [ ] Oddaja projekta
 - [ ] Terraform
 - [x] API Gateway
 - [ ] Ingress controller
-- [ ] IAM, OAuth2, OIDC
+- [x] IAM, OAuth2, OIDC
 
 ---
 
