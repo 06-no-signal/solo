@@ -21,11 +21,11 @@ jobs:
           - name: frontend
             context: ./frontend
             dockerfile: ./frontend/Dockerfile
-            image: zjulmgganayzfybzla/solo-frontend:latest
+            image: zjulmgganayzfybzla/solo-frontend
           - name: signalling
             context: ./signalling-server
             dockerfile: ./signalling-server/Dockerfile
-            image: zjulmgganayzfybzla/solo-signalling:latest
+            image: zjulmgganayzfybzla/solo-signalling
 
     name: Build and push ${{ matrix.name }}
 
@@ -44,6 +44,8 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ${{ matrix.image }}
+          tags: |
+            type=raw,value=latest,enable={{eq github.ref 'refs/heads/master'}}
 
       - name: Build and push
         id: push
