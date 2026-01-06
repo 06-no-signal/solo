@@ -21,11 +21,11 @@ jobs:
           - name: frontend
             context: ./frontend
             dockerfile: ./frontend/Dockerfile
-            image: zjulmgganayzfybzla/solo-frontend
+            image: zjulmgganayzfybzla/solo-frontend:latest
           - name: signalling
             context: ./signalling-server
             dockerfile: ./signalling-server/Dockerfile
-            image: zjulmgganayzfybzla/solo-signalling
+            image: zjulmgganayzfybzla/solo-signalling:latest
 
     name: Build and push ${{ matrix.name }}
 
