@@ -44,14 +44,30 @@
 - [x] Grafični vmesnik
 - [x] Vmesna predstavitev
 - [ ] Oddaja projekta
-- [ ] Terraform
+- [x] Terraform
 - [x] API Gateway
 - [ ] Ingress controller
 - [x] IAM, OAuth2, OIDC
 
 ---
 
-## Install gateway controller
+## Configure infrastructure
+
+```bash
+cd terraform
+terraform init
+terraform apply
+terraform output -raw kube_config > kubeconfig.yaml
+export KUBECONFIG=$(pwd)/kubeconfig.yaml
+kubectl get nodes
+```
+
+If using Azure CLI, get credentials with:
+```bash
+az aks get-credentials --resource-group solo-rg --name solo-aks
+```
+
+## Install cluster controllers, operators and CRDs
 
 nginx gateway controller installed in the cluster.
 
@@ -111,11 +127,4 @@ helm repo add fluent https://fluent.github.io/helm-charts
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo add minio https://charts.min.io/
 helm dependency update ./helm
-```
-
-## Configure kubectl
-
-```bash
-az aks get-credentials --resource-group solo-rg --name solo-aks
-# TODO: configure terraform
 ```

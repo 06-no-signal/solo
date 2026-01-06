@@ -1,2 +1,10 @@
+# Secret files
 secrets.yaml
 certs/
+
+# Terraform files
+kubeconfig.yaml
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+.terraform/
