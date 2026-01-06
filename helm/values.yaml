@@ -6,7 +6,7 @@ frontend:
   replicas: 1
   host: solo.yon.si
   image:
-    name: jakic12/solo-frontend
+    name: zjulmgganayzfybzla/solo-frontend
     tag: latest
     pullPolicy: Always
   port: 3000
@@ -27,7 +27,7 @@ signalling:
   ws:
     port: 3000
   image:
-    name: jakic12/solo-signal
+    name: zjulmgganayzfybzla/solo-signalling
     tag: latest
     pullPolicy: Always
 
