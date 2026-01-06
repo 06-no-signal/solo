@@ -27,7 +27,7 @@
 - [x] Mikrostoritve in »cloud-native« aplikacija
 - [ ] Dokumentacija
 - [ ] Dokumentacija API
-- [ ] Cevovod CI/CD
+- [x] Cevovod CI/CD
 - [x] Helm charts
 - [x] Namestitev v oblak
 - [ ] »Serverless« funkcija
@@ -46,7 +46,7 @@
 - [ ] Oddaja projekta
 - [x] Terraform
 - [x] API Gateway
-- [ ] Ingress controller
+- [x] Ingress controller
 - [x] IAM, OAuth2, OIDC
 
 ---
