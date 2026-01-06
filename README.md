@@ -73,13 +73,19 @@ helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namesp
 kubectl apply --server-side -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.27/releases/cnpg-1.27.1.yaml
 ```
 
-4. Install secrets
+4. Install the RabbitMQ operator:
+
+```bash
+kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
+```
+
+5. Install secrets
 
 ```bash
 sops --decrypt secrets.enc.yaml | kubectl apply -f -
 ```
 
-5. Import the keycloak client from `keycloak/frontend.json`
+6. Import the keycloak client from `keycloak/frontend.json`
 
 ## Development
 
