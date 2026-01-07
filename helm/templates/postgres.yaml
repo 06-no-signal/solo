@@ -17,10 +17,12 @@ spec:
 
   bootstrap:
     initdb:
-      database: solo
+      database: {{ .Values.databases.app.name }}
       owner: app
       secret:
         name: {{ .Values.databases.app.secret }}
+      postInitSQL:
+        - ALTER USER app CREATEDB;
 
   # Require 1Gi of space
   storage:

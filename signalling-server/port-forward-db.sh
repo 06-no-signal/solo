@@ -1,0 +1,1 @@
+kubectl port-forward pod/dev-app-db-cluster-1 5432:5432

@@ -35,6 +35,28 @@ spec:
               value: amqp://$(RABBITMQ_USER):$(RABBITMQ_PASSWORD)@{{ .Values.rabbitmq.name }}:5672
             - name: PORT
               value: "{{ .Values.signalling.ws.port }}"
+            - name: DEFAULT_DB_TYPE
+              value: postgres
+            - name: DEFAULT_DB_HOST
+              value: {{ include "cluster.app.fullname" .}}-rw
+            - name: DEFAULT_DB_PORT
+              value: "{{ .Values.databases.app.port }}"
+            - name: DEFAULT_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.databases.app.secret }}
+                  key: 'username'
+            - name: DEFAULT_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.databases.app.secret }}
+                  key: 'password'
+            - name: DEFAULT_DB_NAME
+              value: {{ .Values.databases.app.name }}
+            - name: DEFAULT_DB_LOGGING
+              value: "false"
+            - name: RUN_MIGRATIONS
+              value: "true"
 
 ---
 

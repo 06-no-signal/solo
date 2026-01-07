@@ -1,5 +1,7 @@
 #!/bin/bash
-sudo docker build -t plojyon/solo-signal:latest .
-sudo docker push plojyon/solo-signal:latest
+docker build -t jakic12/solo-signal:latest .
+docker push jakic12/solo-signal:latest
 
-../deploy.sh
+kubectl delete pods -l app.kubernetes.io/component=WebRTC-signalling-server
+
+# ../deploy.sh

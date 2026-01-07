@@ -41,16 +41,11 @@ databases:
     secret: keycloak-usr-secret # username: keycloak
     superuserSecret: pg-superuser-secret # username: postgres
   app:
+    name: solo_app_db
+    host: solo-postgresql
+    port: 5432
     secret: pg-usr-secret # username: app
-    superuserSecret: pg-superuser-secret # username: postgres
-
-databases:
-  keycloak:
-    adminSecret: keycloak-admin-secret
-    secret: keycloak-usr-secret # username: keycloak
-    superuserSecret: pg-superuser-secret # username: postgres
-  app:
-    secret: pg-usr-secret # username: app
+    externalHost: db.solo.yon.si
     superuserSecret: pg-superuser-secret # username: postgres
 
 keycloak:
