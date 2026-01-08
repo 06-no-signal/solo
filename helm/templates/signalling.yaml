@@ -65,7 +65,7 @@ spec:
             failureThreshold: 600
           readinessProbe:
             httpGet:
-              path: /health/readyness
+              path: /health/readiness
               port: {{ .Values.signalling.ws.port }}
             periodSeconds: 10
             failureThreshold: 3
