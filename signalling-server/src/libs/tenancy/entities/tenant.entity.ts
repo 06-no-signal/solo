@@ -1,7 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import type { DeepPartial } from 'typeorm/common/DeepPartial';
+import { Unique } from 'typeorm';
 
 @Entity('tenant')
+@Unique(['host', 'database', 'port'])
 export class Tenant {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
