@@ -14,7 +14,9 @@ async function bootstrap() {
     //.addTag('signalling')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup('api', app, documentFactory, {
+    jsonDocumentUrl: 'api/json',
+  });
 
   await app.listen(process.env.PORT ?? 6969);
 }
