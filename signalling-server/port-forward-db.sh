@@ -1,1 +1,1 @@
-kubectl port-forward pod/dev-app-db-cluster-1 5432:5432
+kubectl port-forward $(kubectl get pod -l cnpg.io/instanceRole=primary,app.kubernetes.io/component=app -o jsonpath="{.items[0].metadata.name}") 5432:5432 &
