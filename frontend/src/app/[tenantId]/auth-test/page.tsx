@@ -1,7 +1,7 @@
 "use client";
 
+import { privateFetch } from "@/app/auth/authHandlers";
 import { useEffect, useState } from "react";
-import { privateFetch } from "../auth/authHandlers";
 
 export default () => {
   const [data, setData] = useState<any>(null);

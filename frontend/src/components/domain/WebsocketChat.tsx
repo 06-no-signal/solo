@@ -12,9 +12,9 @@ import { cn } from "@/lib/utils";
 
 export const WebsocketChat: FC<{
   ws: Socket;
-  roomId: string;
+  userId: string;
   className?: string;
-}> = ({ ws, roomId, className }) => {
+}> = ({ ws, userId, className }) => {
   const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState<string>("");
   const scrollableDiv = useRef<HTMLDivElement>(null);
@@ -38,7 +38,7 @@ export const WebsocketChat: FC<{
   }, [messages]);
 
   const sendMessage = () => {
-    ws.emit("chat", { message: input, room: roomId });
+    ws.emit("chat", { message: input, user: userId });
     setInput("");
   };
 

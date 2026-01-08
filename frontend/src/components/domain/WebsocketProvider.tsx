@@ -1,5 +1,6 @@
 "use client";
 
+import { SocketOptions } from "dgram";
 // Source - https://stackoverflow.com/a
 // Posted by Alen Vlahovljak, modified by community. See post 'Timeline' for change history
 // Retrieved 2025-12-11, License - CC BY-SA 4.0
@@ -12,23 +13,37 @@ import {
   JSX,
   useState,
 } from "react";
-import { io, Socket } from "socket.io-client";
+import { useAuth } from "react-oidc-context";
+import { io, ManagerOptions, Socket } from "socket.io-client";
 
 type WSProviderProps = {
   children: ReactNode;
   url?: string;
   postInit?: (ws: Socket) => void;
+  wsOpts?: Partial<ManagerOptions & SocketOptions>;
+  tenantId?: string;
 };
 
 const WSStateContext = createContext<Socket | null>(null);
 
-function WSProvider({ children, url, postInit }: WSProviderProps): JSX.Element {
+function WSProvider({
+  children,
+  url,
+  postInit,
+  tenantId,
+}: WSProviderProps): JSX.Element {
   const [ws, setWs] = useState<Socket | null>(null);
   const [connected, setConnected] = useState(false);
+  const auth = useAuth();
 
   useEffect(() => {
-    if (url) {
-      const socket = io(url);
+    if (url && tenantId) {
+      const socket = io(url, {
+        auth: {
+          token: auth?.user?.access_token,
+          tenantId,
+        },
+      });
       postInit?.(socket);
       setWs(socket);
 

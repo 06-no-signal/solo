@@ -87,11 +87,13 @@ export const beforeSignin = (): void => {
   }
 };
 
-export const protectedRoute = (component: React.ComponentType<object>) => {
+export const protectedRoute = <T extends object>(
+  component: React.ComponentType<T>
+): React.ComponentType<T> => {
   const Component = withAuthenticationRequired(component, {
     onBeforeSignin: beforeSignin,
   });
-  return <Component />;
+  return (props) => <Component {...props} />;
 };
 
 export const onSigninRedirectToPreviousLocation = (): void => {

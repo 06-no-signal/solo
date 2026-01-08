@@ -21,7 +21,7 @@ export const Button = (
 
 export const LoginButton = () => {
   const auth = useAuth();
-  if (auth.user) {
+  if (auth?.user) {
     return (
       <>
         Signed in as {auth.user?.profile?.email} {auth.user?.access_token}{" "}

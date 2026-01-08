@@ -2,7 +2,7 @@ import { useLocalStream } from "@/components/domain/LocalStreamProvider";
 import { useWS } from "@/components/domain/WebsocketProvider";
 import { useEffect, useRef, useState } from "react";
 
-export const useRTCCall = (room: string) => {
+export const useRTCCall = (targetUserId: string) => {
   // Make sure that the ws client is connected to the room before starting a call
 
   const ws = useWS();
@@ -24,7 +24,7 @@ export const useRTCCall = (room: string) => {
       await pc.setRemoteDescription(new RTCSessionDescription(offer));
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
-      ws.emit("RTC-answer", { answer, room });
+      ws.emit("RTC-answer", { answer, targetUserId });
     });
     ws.on("RTC-answer", ({ answer }) => {
       console.debug("[RTC] answer received", answer);
@@ -60,7 +60,7 @@ export const useRTCCall = (room: string) => {
       const { candidate } = event;
       if (candidate) {
         console.debug("[RTC] Sending ICE candidate", candidate);
-        ws.emit("RTC-ice", { candidate, room });
+        ws.emit("RTC-ice", { candidate, targetUserId });
       }
     };
     pc.ontrack = (event) => {
@@ -84,7 +84,7 @@ export const useRTCCall = (room: string) => {
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
     console.debug("[RTC] Sending offer", offer);
-    ws.emit("RTC-offer", { offer, room });
+    ws.emit("RTC-offer", { offer, targetUserId });
   };
 
   const endCall = () => {

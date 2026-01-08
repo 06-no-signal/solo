@@ -8,7 +8,8 @@ import { Mic, MicOff, Monitor } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ImPhoneHangUp } from "react-icons/im";
-import { VideoGrid } from "./VideoGrid";
+import { VideoGrid } from "../../../../room/[roomId]/call/VideoGrid";
+import { useAuth } from "react-oidc-context";
 
 const removeQueryParam = (param: string) => {
   const url = new URL(window.location.href);
@@ -20,16 +21,16 @@ export default function Page({
   params,
 }: {
   params: Promise<{
-    roomId: string;
+    userId: string;
     shouldStartCall?: string;
     shouldAcceptCall?: string;
   }>;
 }) {
-  const { roomId } = React.use(params);
+  const { userId } = React.use(params);
   const ws = useWS();
-  const rtc = useRTCCall(roomId);
+  const rtc = useRTCCall(userId);
   const localStream = useLocalStream();
-
+  const { user } = useAuth();
   const searchParams = useSearchParams();
 
   const [isAwaitingAnswer, setIsAwaitingAnswer_] = useState<string | undefined>(
@@ -52,15 +53,13 @@ export default function Page({
     return s;
   }, [localStream, screenshareStream]);
 
-  const setIsAwaitingAnswer = (roomId: string | undefined) => {
-    isAwaitingAnswerRef.current = roomId;
-    setIsAwaitingAnswer_(roomId);
+  const setIsAwaitingAnswer = (userId: string | undefined) => {
+    isAwaitingAnswerRef.current = userId;
+    setIsAwaitingAnswer_(userId);
   };
 
   useEffect(() => {
     (async () => {
-      await ws.emit("join-room", { room: roomId });
-      console.log("Joined room:", roomId);
       ws.on("start-call-acc", (data: any) => {
         console.log("Call accepted for room:", data.room);
         if (data.room !== isAwaitingAnswerRef.current) {
@@ -78,12 +77,12 @@ export default function Page({
       if (searchParams.get("shouldStartCall") === "true") {
         removeQueryParam("shouldStartCall");
 
-        setIsAwaitingAnswer(roomId);
-        ws.emit("start-call-req", { room: roomId });
+        setIsAwaitingAnswer(userId);
+        ws.emit("start-call-req", { targetUserId: userId });
       }
       if (searchParams.get("shouldAcceptCall") === "true") {
         removeQueryParam("shouldAcceptCall");
-        ws.emit("start-call-acc", { room: roomId });
+        ws.emit("start-call-acc", { targetUserId: userId });
       }
     })();
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo docker build -t plojyon/solo-frontend:latest .
-sudo docker push plojyon/solo-frontend:latest
+docker build -t jakic12/solo-frontend:latest . # -f Dockerfile.dev
+docker push jakic12/solo-frontend:latest
 
-../deploy.sh
+kubectl delete pods -l app.kubernetes.io/component=frontend-server

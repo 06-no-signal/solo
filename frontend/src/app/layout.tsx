@@ -1,12 +1,11 @@
+"use client";
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ConfiguredAuthProvider } from "./auth/authHandlers";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "./AppSidebar";
-import { WSProvider } from "@/components/domain/WebsocketProvider";
-import { CallReciever } from "@/components/domain/CallReceiver";
-import { env, PublicEnvScript } from "next-runtime-env";
+import { PublicEnvScript } from "next-runtime-env";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,10 +17,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Solo",
   description: "Solo is a video calling app for one who hates video calls",
 };
+
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -36,17 +37,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SidebarProvider>
-          <AppSidebar />
-          <main className="w-full flex flex-col">
-            {/* <SidebarTrigger /> */}
-            <ConfiguredAuthProvider>
-              <WSProvider url={env("NEXT_PUBLIC_SIGNALLING_SERVER_URL")}>
-                <CallReciever>{children}</CallReciever>
-              </WSProvider>
-            </ConfiguredAuthProvider>
-          </main>
-        </SidebarProvider>
+        <QueryClientProvider client={queryClient}>
+          <ConfiguredAuthProvider>{children}</ConfiguredAuthProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

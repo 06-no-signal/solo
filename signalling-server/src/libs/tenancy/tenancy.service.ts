@@ -26,6 +26,7 @@ export class TenancyService {
     }
 
     return {
+      id: tenant.id,
       name: tenant.name,
     };
   }

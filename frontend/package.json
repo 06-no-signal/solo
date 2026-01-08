@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "gen-types": "npx openapi-typescript https://signal.solo.yon.si/api/json -o src/types/Api.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -19,6 +20,9 @@
     "lucide-react": "^0.560.0",
     "next": "16.0.4",
     "next-runtime-env": "^3.3.0",
+    "openapi-fetch": "^0.15.0",
+    "openapi-react-query": "^0.5.1",
+    "openapi-typescript": "^7.10.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-icons": "^5.5.0",

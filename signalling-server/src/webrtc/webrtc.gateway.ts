@@ -51,29 +51,15 @@ export class WebrtcGateway implements OnGatewayInit {
     this.messageBus.unsubscribe(client.id);
   }
 
-  @SubscribeMessage('join-room')
-  handleJoinRoom(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { room: string },
-  ) {
-    client.join(payload.room);
-    this.messageBus.publish("room", {
-      room: payload.room,
-      event: 'peer-joined',
-      payload: client.id,
-    });
-  }
-
   @SubscribeMessage('start-call-req')
   handleStartCallReq(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { room: string },
+    @MessageBody() payload: { targetUserId: string },
   ) {
-    this.messageBus.publish("broadcast", {
+    this.messageBus.publish(payload.targetUserId, {
       event: 'start-call-req',
       payload: {
         from: client.id,
-        room: payload.room,
       },
     });
   }
@@ -81,32 +67,28 @@ export class WebrtcGateway implements OnGatewayInit {
   @SubscribeMessage('start-call-acc')
   handleStartCallRes(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { room: string },
+    @MessageBody() payload: { targetUserId: string },
   ) {
     // A member of the room has accepted the call
     // client.to(payload.room)
-    this.messageBus.publish("room", {
-      room: payload.room,
+    this.messageBus.publish(payload.targetUserId, {
       event: 'start-call-acc',
       payload: {
         from: client.id,
-        room: payload.room,
       },
     });
- }
+  }
 
   @SubscribeMessage('start-call-rej')
   handleStartCallRej(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { room: string },
+    @MessageBody() payload: { targetUserId: string },
   ) {
     // A member of the room has accepted the call
-    this.messageBus.publish("room", {
-      room: payload.room,
+    this.messageBus.publish(payload.targetUserId, {
       event: 'start-call-rej',
       payload: {
         from: client.id,
-        room: payload.room,
       },
     });
   }
@@ -114,11 +96,10 @@ export class WebrtcGateway implements OnGatewayInit {
   @SubscribeMessage('RTC-offer')
   handleOffer(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { offer: string; room: string },
+    @MessageBody() payload: { offer: string; targetUserId: string },
   ) {
     // forward to a specific room peer
-    this.messageBus.publish("room", {
-      room: payload.room,
+    this.messageBus.publish(payload.targetUserId, {
       event: 'RTC-offer',
       payload: {
         from: client.id,
@@ -130,10 +111,9 @@ export class WebrtcGateway implements OnGatewayInit {
   @SubscribeMessage('RTC-answer')
   handleAnswer(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { answer: string; room: string },
+    @MessageBody() payload: { answer: string; targetUserId: string },
   ) {
-    this.messageBus.publish("room", {
-      room: payload.room,
+    this.messageBus.publish(payload.targetUserId, {
       event: 'RTC-answer',
       payload: {
         from: client.id,
@@ -145,10 +125,9 @@ export class WebrtcGateway implements OnGatewayInit {
   @SubscribeMessage('RTC-ice')
   handleIce(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { candidate: string; room: string },
+    @MessageBody() payload: { candidate: string; targetUserId: string },
   ) {
-    this.messageBus.publish("room", {
-      room: payload.room,
+    this.messageBus.publish(payload.targetUserId, {
       event: 'RTC-ice',
       payload: {
         from: client.id,
@@ -160,10 +139,9 @@ export class WebrtcGateway implements OnGatewayInit {
   @SubscribeMessage('chat')
   handleChat(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { message: string; room: string },
+    @MessageBody() payload: { message: string; targetUserId: string },
   ) {
-    this.messageBus.publish("room", {
-      room: payload.room,
+    this.messageBus.publish(payload.targetUserId, {
       event: 'chat',
       payload: {
         from: client.id,
