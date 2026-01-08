@@ -2,7 +2,10 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: {{ include "cluster.app.fullname" .}}
+  labels:
+    app.kubernetes.io/component: app
 spec:
+  # Spawn 2 instances
   instances: 2
 
   # Example of rolling update strategy:
@@ -34,7 +37,10 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: {{ include "cluster.keycloak.fullname" .}}
+  labels:
+    app.kubernetes.io/component: keycloak
 spec:
+  # Spawn 2 instances
   instances: 2
 
   # Example of rolling update strategy:
@@ -57,3 +63,13 @@ spec:
   # Require 1Gi of space
   storage:
     size: 1Gi
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cnpg-controller-manager-config
+  namespace: cnpg-system
+data:
+  INHERITED_LABELS: "app.kubernetes.io/component"

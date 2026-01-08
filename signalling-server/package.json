@@ -20,7 +20,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
     "typeorm:generate": "npm run typeorm -- migration:generate ./src/libs/database/migrations/generated -d ./src/libs/database/cli.config.ts",
-    "typeorm:sys-generate": "npm run typeorm -- migration:generate ./src/libs/database/system-migrations/generated -d ./src/libs/database/cli-system.config.ts"
+    "typeorm:sys-generate": "npm run typeorm -- migration:generate ./src/libs/database/system-migrations/generated -d ./src/libs/database/cli-system.config.ts",
+    "create:tenant": "bash ./create_tenant.sh",
+    "create:user": "bash ./create_user.sh"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

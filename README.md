@@ -103,6 +103,23 @@ sops --decrypt secrets.enc.yaml | kubectl apply -f -
 
 6. Import the keycloak client from `keycloak/frontend.json`
 
+7. Create tenants
+
+```bash
+pushd signalling-server
+npm run create:tenant fmf tenant_fmf
+npm run create:tenant fri tenant_fri
+popd
+```
+
+8. Create users in keycloak, then import them into the desired tenants
+
+```bash
+pushd signalling-server
+npm run create:user fmf 19c43f78-aa0c-4fbf-ac60-ef3a98e7b734
+popd
+```
+
 ## Development
 
 ```bash
