@@ -19,6 +19,7 @@ import { DataSourceConfig } from './datasource.config';
 export class DatabaseService implements OnModuleDestroy, OnModuleInit {
   private readonly logger = new Logger(DatabaseService.name);
   private tenantConnections = new Map<string, DataSource>();
+  private tenantMap = new Map<string, Tenant>();
   private defaultDataSource: DataSource;
 
   constructor(
@@ -88,6 +89,11 @@ export class DatabaseService implements OnModuleDestroy, OnModuleInit {
 
     this.logger.log(`Tenants found:\n${JSON.stringify(tenants, undefined, 2)}`);
 
+    // Cache tenants for lookup by other services
+    for (const t of tenants) {
+      this.tenantMap.set(t.id, t);
+    }
+
     for (const tenant of tenants) {
       const connectionsString = this._createConnectionString(tenant);
       await this._createTenantConnection(tenant, connectionsString);
@@ -95,6 +101,13 @@ export class DatabaseService implements OnModuleDestroy, OnModuleInit {
 
     await this.defaultDataSource.destroy();
     this.logger.log('Default connection closed');
+  }
+
+  /**
+   * Get tenant entity by id from cached tenants
+   */
+  getTenantById(tenantId: string) {
+    return this.tenantMap.get(tenantId);
   }
 
   private async _createTenantConnection(

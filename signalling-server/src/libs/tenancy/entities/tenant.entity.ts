@@ -6,8 +6,8 @@ export class Tenant {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
-  @Column({ name: 'name', nullable: true })
-  name?: string;
+  @Column({ name: 'name' })
+  name: string;
 
   @Column({ name: 'connection_type', nullable: true })
   connectionType?: string;

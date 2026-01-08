@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { TenancyModule } from 'src/libs/tenancy/tenancy.module';
@@ -7,10 +7,10 @@ import { DataSourceConfig } from './datasource.config';
 
 @Module({
   imports: [
-    TenancyModule,
+    forwardRef(() => TenancyModule),
     ConfigModule.forFeature(DataSourceConfig),
   ],
   providers: [DatabaseService],
   exports: [DatabaseService],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}
