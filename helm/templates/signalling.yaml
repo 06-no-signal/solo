@@ -57,7 +57,24 @@ spec:
               value: "false"
             - name: RUN_MIGRATIONS
               value: "true"
-
+          startupProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.signalling.ws.port }}
+            periodSeconds: 1
+            failureThreshold: 600
+          readinessProbe:
+            httpGet:
+              path: /health/readyness
+              port: {{ .Values.signalling.ws.port }}
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: {{ .Values.signalling.ws.port }}
+            periodSeconds: 10
+            failureThreshold: 3
 ---
 
 apiVersion: v1

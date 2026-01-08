@@ -25,15 +25,18 @@
     "create:user": "bash ./create_user.sh"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/platform-socket.io": "^11.1.9",
     "@nestjs/swagger": "^11.2.3",
+    "@nestjs/terminus": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "@nestjs/websockets": "^11.1.9",
     "amqplib": "^0.10.9",
+    "axios": "^1.13.2",
     "nestjs-cls": "^6.2.0",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
