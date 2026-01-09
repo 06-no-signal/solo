@@ -9,6 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { WebrtcService } from './webrtc.service';
 import { MessageBusService } from './message-bus.service';
+import { JwtVerifierService } from './jwks';
 
 @WebSocketGateway({ cors: true })
 export class WebrtcGateway implements OnGatewayInit {
@@ -16,6 +17,24 @@ export class WebrtcGateway implements OnGatewayInit {
   server: Server;
 
   async afterInit(server: Server) {
+    server.use(async (socket, next) => {
+      try {
+        console.log("Authenticating socket connection ...");
+        const token = socket.handshake.auth.token;
+        if (!token) {
+          console.log("Bro is trying to sneak in without a token!");
+          return next(new Error('Missing authentication token'));
+        }
+        const payload = await this.jwtService.verify(token);
+        socket.data.user = payload;
+        console.log(`Socket authenticated: ${socket.id}, user.sub: ${payload.sub}`);
+        next();
+      } catch (error) {
+        console.log(`Socket authentication failed:`, error);
+        next(new Error(`Authentication failed: ${error.message}`));
+      }
+    });
+
     server.on('connection', (socket: Socket) => {
       socket.onAny((event, ...args) => {
         console.log(`[SERVER-IN] ${socket.id} -> event "${event}"`, args);
@@ -36,10 +55,13 @@ export class WebrtcGateway implements OnGatewayInit {
   constructor(
     private readonly webrtcService: WebrtcService,
     private readonly messageBus: MessageBusService,
+    private readonly jwtService: JwtVerifierService,
   ) {}
 
   handleConnection(client: Socket) {
-    this.messageBus.subscribe(client.id, (msg) => {
+    const user = client.data.user;
+    console.log(`Client connected: ${client.id}, username: ${user.preferred_username} sub: ${user.sub}`);
+    this.messageBus.subscribe(user.id, (msg) => {
       client.to(client.id).emit(msg.event, msg.payload);
       console.log(`[SERVER-OUT] ${client.id} <- event "${msg.event}"`, msg.payload);
     });
@@ -59,7 +81,7 @@ export class WebrtcGateway implements OnGatewayInit {
     this.messageBus.publish(payload.targetUserId, {
       event: 'start-call-req',
       payload: {
-        from: client.id,
+        from: client.data.user.sub,
       },
     });
   }
@@ -74,7 +96,7 @@ export class WebrtcGateway implements OnGatewayInit {
     this.messageBus.publish(payload.targetUserId, {
       event: 'start-call-acc',
       payload: {
-        from: client.id,
+        from: client.data.user.sub,
       },
     });
   }
@@ -88,7 +110,7 @@ export class WebrtcGateway implements OnGatewayInit {
     this.messageBus.publish(payload.targetUserId, {
       event: 'start-call-rej',
       payload: {
-        from: client.id,
+        from: client.data.user.sub,
       },
     });
   }
@@ -102,7 +124,7 @@ export class WebrtcGateway implements OnGatewayInit {
     this.messageBus.publish(payload.targetUserId, {
       event: 'RTC-offer',
       payload: {
-        from: client.id,
+        from: client.data.user.sub,
         offer: payload.offer,
       },
     });
@@ -116,7 +138,7 @@ export class WebrtcGateway implements OnGatewayInit {
     this.messageBus.publish(payload.targetUserId, {
       event: 'RTC-answer',
       payload: {
-        from: client.id,
+        from: client.data.user.sub,
         answer: payload.answer,
       },
     });
@@ -130,7 +152,7 @@ export class WebrtcGateway implements OnGatewayInit {
     this.messageBus.publish(payload.targetUserId, {
       event: 'RTC-ice',
       payload: {
-        from: client.id,
+        from: client.data.user.sub,
         candidate: payload.candidate,
       },
     });
@@ -144,7 +166,7 @@ export class WebrtcGateway implements OnGatewayInit {
     this.messageBus.publish(payload.targetUserId, {
       event: 'chat',
       payload: {
-        from: client.id,
+        from: client.data.user.sub,
         message: payload.message,
       },
     });

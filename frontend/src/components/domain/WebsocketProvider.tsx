@@ -37,7 +37,7 @@ function WSProvider({
   const auth = useAuth();
 
   useEffect(() => {
-    if (url && tenantId) {
+    if (url && tenantId && auth?.user?.access_token) {
       const socket = io(url, {
         auth: {
           token: auth?.user?.access_token,
@@ -55,7 +55,7 @@ function WSProvider({
         socket.close();
       };
     }
-  }, [url]);
+  }, [url, tenantId, auth?.user?.access_token]);
 
   return (
     <WSStateContext.Provider value={ws}>
