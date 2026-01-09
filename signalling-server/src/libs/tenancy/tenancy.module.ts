@@ -16,9 +16,6 @@ import { DatabaseModule } from 'src/libs/database/database.module';
         mount: true,
         setup: (cls, req: Request) => {
           const tenantId = req.headers['tenant-id'];
-
-          console.log('TenancyModule - setting tenant ID in CLS:', tenantId);
-
           cls.set(TENANT_KEY, tenantId);
         },
       },

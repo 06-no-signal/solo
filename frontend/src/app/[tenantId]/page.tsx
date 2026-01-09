@@ -3,7 +3,7 @@
 import { LoginButton } from "@/components/domain/LoginButton";
 import React from "react";
 
-const Page: React.FC<{ params: Promise<{ userId: string }> }> = ({
+const Page: React.FC<{ params: Promise<{ targetUserId: string }> }> = ({
   params,
 }) => {
   return (

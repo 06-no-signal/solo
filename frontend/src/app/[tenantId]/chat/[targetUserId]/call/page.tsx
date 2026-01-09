@@ -21,14 +21,14 @@ export default function Page({
   params,
 }: {
   params: Promise<{
-    userId: string;
+    targetUserId: string;
     shouldStartCall?: string;
     shouldAcceptCall?: string;
   }>;
 }) {
-  const { userId } = React.use(params);
+  const { targetUserId } = React.use(params);
   const ws = useWS();
-  const rtc = useRTCCall(userId);
+  const rtc = useRTCCall(targetUserId);
   const localStream = useLocalStream();
   const { user } = useAuth();
   const searchParams = useSearchParams();
@@ -53,9 +53,9 @@ export default function Page({
     return s;
   }, [localStream, screenshareStream]);
 
-  const setIsAwaitingAnswer = (userId: string | undefined) => {
-    isAwaitingAnswerRef.current = userId;
-    setIsAwaitingAnswer_(userId);
+  const setIsAwaitingAnswer = (targetUserId: string | undefined) => {
+    isAwaitingAnswerRef.current = targetUserId;
+    setIsAwaitingAnswer_(targetUserId);
   };
 
   useEffect(() => {
@@ -77,12 +77,12 @@ export default function Page({
       if (searchParams.get("shouldStartCall") === "true") {
         removeQueryParam("shouldStartCall");
 
-        setIsAwaitingAnswer(userId);
-        ws.emit("start-call-req", { targetUserId: userId });
+        setIsAwaitingAnswer(targetUserId);
+        ws.emit("start-call-req", { targetUserId });
       }
       if (searchParams.get("shouldAcceptCall") === "true") {
         removeQueryParam("shouldAcceptCall");
-        ws.emit("start-call-acc", { targetUserId: userId });
+        ws.emit("start-call-acc", { targetUserId });
       }
     })();
 

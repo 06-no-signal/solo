@@ -37,16 +37,14 @@ export class WebrtcGateway implements OnGatewayInit {
 
     server.on('connection', (socket: Socket) => {
       socket.onAny((event, ...args) => {
-        console.log(`[SERVER-IN] ${socket.id} -> event "${event}"`, args);
+        console.log(`[SERVER-IN] ${socket.data.user.preferred_username}@${socket.id} -> event "${event}"`, args);
       });
     });
 
     // wait for messageBus to connect
     await new Promise(resolve => setTimeout(resolve, 1000));
-    this.messageBus.subscribe("room", (msg) => {
-      this.server.to(msg.room).emit(msg.event, msg.payload);
-      console.log(`[SERVER-OUT] room "${msg.room}" <- event "${msg.event}"`, msg.payload);
-    });
+
+    // NOTE: Do we even need broadcasts?
     this.messageBus.subscribe("broadcast", (msg) => {
       this.server.emit(msg.event, msg.payload);
       console.log(`[SERVER-OUT] broadcast <- event "${msg.event}"`, msg.payload);
@@ -61,16 +59,17 @@ export class WebrtcGateway implements OnGatewayInit {
   handleConnection(client: Socket) {
     const user = client.data.user;
     console.log(`Client connected: ${client.id}, username: ${user.preferred_username} sub: ${user.sub}`);
-    this.messageBus.subscribe(user.id, (msg) => {
-      client.to(client.id).emit(msg.event, msg.payload);
-      console.log(`[SERVER-OUT] ${client.id} <- event "${msg.event}"`, msg.payload);
+    this.messageBus.subscribe(user.sub, (msg) => {
+      client.emit(msg.event, msg.payload);
+      console.log(`[SERVER-OUT] ${client.data.user.preferred_username}@${client.id} <- event "${msg.event}"`, msg.payload);
     });
+    client.emit("hello", "test message");
     this.webrtcService.addClient(client.id);
   }
 
   handleDisconnect(client: Socket) {
     this.webrtcService.removeClient(client.id);
-    this.messageBus.unsubscribe(client.id);
+    this.messageBus.unsubscribe(client.data.user.sub);
   }
 
   @SubscribeMessage('start-call-req')
