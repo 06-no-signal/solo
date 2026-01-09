@@ -1,11 +1,13 @@
 "use client";
 
 import React from "react";
-import { withAuthenticationRequired } from "react-oidc-context";
+import { useAuth, withAuthenticationRequired } from "react-oidc-context";
 import { AuthProvider } from "react-oidc-context";
-import { Log, WebStorageStateStore } from "oidc-client-ts";
+import { Log, User, WebStorageStateStore } from "oidc-client-ts";
 import { FC, PropsWithChildren } from "react";
 import { env } from "next-runtime-env";
+import { $api } from "@/api-helpers/api-getters";
+import { useTenant } from "../[tenantId]/tenant-provider";
 
 Log.setLogger(console);
 Log.setLevel(Log.DEBUG);
@@ -34,16 +36,60 @@ const getOidcConfig = () => {
       typeof window !== "undefined"
         ? new WebStorageStateStore({ store: window.localStorage })
         : undefined,
-    onSigninCallback: (user: any): void => {
+    onSigninCallback: (user?: User): void => {
       onSigninRedirectToPreviousLocation();
     },
   };
 };
 
+const RegisterUser: FC<{}> = () => {
+  const tenant = useTenant();
+  const { user } = useAuth();
+
+  React.useEffect(() => {
+    const registeredUsers = JSON.parse(
+      localStorage.getItem("registeredUsers") || "[]"
+    );
+    if (
+      tenant &&
+      user &&
+      !registeredUsers.includes(`${tenant.id}|${user.profile.sub}`)
+    ) {
+      fetch(env("NEXT_PUBLIC_SIGNALLING_SERVER_URL") + "/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "tenant-id": tenant.id,
+        },
+        body: JSON.stringify({
+          keycloakId: user.profile.sub,
+          username: user.profile.preferred_username,
+        }),
+      } as any)
+        .then(() => {
+          registeredUsers.push(`${tenant.id}|${user.profile.sub}`);
+          localStorage.setItem(
+            "registeredUsers",
+            JSON.stringify(registeredUsers)
+          );
+        })
+        .catch((err) => {
+          console.error("Error registering user:", err);
+        });
+    }
+  }, [tenant, user]);
+  return null;
+};
+
 export const ConfiguredAuthProvider: FC<PropsWithChildren<{}>> = ({
   children,
 }) => {
-  return <AuthProvider {...getOidcConfig()}>{children}</AuthProvider>;
+  return (
+    <AuthProvider {...getOidcConfig()}>
+      <RegisterUser />
+      {children}
+    </AuthProvider>
+  );
 };
 
 const getCurrentLocation = (): string => {

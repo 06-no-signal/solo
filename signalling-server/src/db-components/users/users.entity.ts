@@ -4,8 +4,8 @@ import type { DeepPartial } from 'typeorm/common/DeepPartial';
 @Entity('users')
 @Unique(['keycloakId'])
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+  id: string;
 
   @Column()
   username?: string;

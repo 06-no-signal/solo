@@ -105,15 +105,16 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         TenantDto: {
+            id: string;
             name: string;
         };
         CreateUserDto: {
-            email: string;
+            username: string;
             keycloakId: string;
         };
         User: {
-            id: number;
-            email: string;
+            id: string;
+            username?: string;
             keycloakId: string;
         };
     };

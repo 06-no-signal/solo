@@ -4,17 +4,11 @@ import { WSProvider } from "@/components/domain/WebsocketProvider";
 import { ConfiguredAuthProvider, protectedRoute } from "../auth/authHandlers";
 import { CallReciever } from "@/components/domain/CallReceiver";
 import { env } from "next-runtime-env";
-import { createContext, use, useContext } from "react";
+import { use } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "../AppSidebar";
 import { $api } from "@/api-helpers/api-getters";
-import { Tenant } from "@/types/schemata";
-
-const TenantContext = createContext<Tenant | undefined>(undefined);
-export const useTenant = (): Tenant | undefined => {
-  const context = useContext(TenantContext);
-  return context;
-};
+import { TenantContext } from "./tenant-provider";
 
 function RoomLayout({
   children,
@@ -36,7 +30,7 @@ function RoomLayout({
     },
   });
   return (
-    <TenantContext.Provider value={tenant}>
+    <TenantContext.Provider value={tenant || { id: tenantId }}>
       <SidebarProvider>
         <AppSidebar />
         <main className="w-full flex flex-col">

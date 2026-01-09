@@ -14,6 +14,22 @@ export class UsersService {
     this.userRepository = this.databaseService
       .getDataSource()
       .getRepository(User);
+    // chec if a user with the same keycloakId exists
+    const existingUser = await this.userRepository.findOneBy({
+      keycloakId: user.keycloakId,
+    });
+    console.log('existingUser', existingUser);
+    if (existingUser) {
+      const newUser = Object.assign(
+        existingUser,
+        Object.fromEntries(
+          Object.entries(user).filter(([_, v]) => v != undefined && v != null),
+        ),
+      );
+      // update the existing user
+      await this.userRepository.save(newUser);
+      return;
+    }
     const newUser = this.userRepository.create(user);
     await this.userRepository.save(newUser);
   }
