@@ -61,11 +61,11 @@ export default function Page({
   useEffect(() => {
     (async () => {
       ws.on("start-call-acc", (data: any) => {
-        console.log("Call accepted for room:", data.room);
-        if (data.room !== isAwaitingAnswerRef.current) {
+        console.log("Call accepted from user:", data.from);
+        if (data.from !== isAwaitingAnswerRef.current) {
           console.error(
-            "Room mismatch:",
-            data.room,
+            "User mismatch:",
+            data.from,
             isAwaitingAnswerRef.current
           );
           return;
