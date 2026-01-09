@@ -2,13 +2,13 @@ import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
 import type { DeepPartial } from 'typeorm/common/DeepPartial';
 
 @Entity('users')
-@Unique(['email'])
+@Unique(['keycloakId'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  email: string;
+  username?: string;
 
   @Column()
   keycloakId: string;

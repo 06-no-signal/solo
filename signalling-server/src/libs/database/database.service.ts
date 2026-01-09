@@ -116,18 +116,16 @@ export class DatabaseService implements OnModuleDestroy, OnModuleInit {
   ) {
     await this._createDatabaseIfNotExists(tenant.database);
 
-    const dataSourceOptions: DataSourceOptions = Object.assign(
-      {},
-      this.dataSourceConfig,
-      {
-        type:
-          tenant.connectionType ?? (this.defaultConnectionOptions.type as any),
-        url: connectionString,
-        entities: [__dirname + '/../../db-components/**/*.entity{.ts,.js}'],
-        migrations: [`${__dirname}/migrations/*{.ts,.js}`],
-        logging: true,
-      },
-    );
+    const dataSourceOptions: DataSourceOptions = {
+      type:
+        tenant.connectionType ?? (this.defaultConnectionOptions.type as any),
+      url: connectionString,
+      entities: [__dirname + '/../../db-components/**/*.entity{.ts,.js}'],
+      migrations: [`${__dirname}/migrations/*{.ts,.js}`],
+      logging: true,
+      migrationsRun: true,
+      synchronize: false,
+    };
 
     const dataSource = new DataSource(dataSourceOptions);
     await dataSource.initialize();

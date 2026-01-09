@@ -12,7 +12,7 @@ export class UsersController {
     console.log('request', request);
     return this.usersService.createUser(
       new User({
-        email: request.email,
+        username: request.username,
         keycloakId: request.keycloakId,
       }),
     );
