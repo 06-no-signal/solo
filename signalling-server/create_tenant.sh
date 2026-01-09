@@ -12,6 +12,7 @@ sleep 2
 username=$(kubectl get secret pg-usr-secret -o jsonpath="{.data.username}" | base64 -d)
 password=$(kubectl get secret pg-usr-secret -o jsonpath="{.data.password}" | base64 -d)
 PGPASSWORD=$password psql -h localhost -p 54322 -U $username -d solo_app_db -c "INSERT INTO tenant (name, database_name) VALUES ('$1','$2');"
+PGPASSWORD=$password psql -h localhost -p 54322 -U $username -d solo_app_db -c "SELECT * FROM tenant WHERE name='$1' and database_name='$2';"
 
 echo "Tenant '$1' created. Killing port-forward"
 kill $PF_PID
