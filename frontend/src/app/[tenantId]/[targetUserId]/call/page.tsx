@@ -8,7 +8,7 @@ import { Mic, MicOff, Monitor } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ImPhoneHangUp } from "react-icons/im";
-import { VideoGrid } from "../../../../room/[roomId]/call/VideoGrid";
+import { VideoGrid } from "./VideoGrid";
 import { useAuth } from "react-oidc-context";
 
 const removeQueryParam = (param: string) => {

@@ -5,6 +5,7 @@ import { useWS } from "@/components/domain/WebsocketProvider";
 import { Phone } from "lucide-react";
 import { redirect, RedirectType } from "next/navigation";
 import React from "react";
+import { useTenant } from "../../tenant-provider";
 
 const Page: React.FC<{ params: Promise<{ targetUserId: string }> }> = ({
   params,
@@ -12,6 +13,8 @@ const Page: React.FC<{ params: Promise<{ targetUserId: string }> }> = ({
   const { targetUserId } = React.use(params);
   const ws = useWS();
 
+  const tenant = useTenant();
+  const tenantId = tenant?.id;
   return (
     <div className="p-4 w-full h-full flex flex-col gap-4">
       <div className="flex flex-row items-center justify-between">
@@ -19,7 +22,7 @@ const Page: React.FC<{ params: Promise<{ targetUserId: string }> }> = ({
         <Phone
           className="ml-2 cursor-pointer"
           onClick={() => {
-            redirect(`${targetUserId}/call?shouldStartCall=true`, RedirectType.push);
+            redirect(`/${tenantId}/${targetUserId}/call?shouldStartCall=true`, RedirectType.push);
           }}
         />
       </div>

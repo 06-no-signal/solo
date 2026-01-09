@@ -5,6 +5,7 @@ import { useWS } from "./WebsocketProvider";
 import { redirect, RedirectType } from "next/navigation";
 import { Button } from "./LoginButton";
 import { Phone, PhoneOff } from "lucide-react";
+import { useTenant } from "@/app/[tenantId]/tenant-provider";
 
 export const CallReciever: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const ws = useWS();
@@ -16,20 +17,23 @@ export const CallReciever: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   useEffect(() => {
     ws.on("start-call-req", (data: any) => {
       console.log(ws.id);
-      console.debug("[CallReceiver] Incoming call for room:", data);
-      setIsBeingCalled(data.room);
+      console.debug("[CallReceiver] Incoming call from user:", data);
+      setIsBeingCalled(data.from);
     });
     return () => {
       ws.off("start-call-req");
     };
   }, [ws]);
 
+  const tenant = useTenant();
+  const tenantId = tenant?.id;  
+
   const acceptCall = async () => {
     if (isBeingCalled) {
-      console.debug("[CallReceiver] Accepting call for room:", isBeingCalled);
+      console.debug("[CallReceiver] Accepting call from user:", isBeingCalled);
       setIsBeingCalled(undefined);
       redirect(
-        `/room/${isBeingCalled}/call?shouldAcceptCall=true`,
+        `/${tenantId}/${isBeingCalled}/call?shouldAcceptCall=true`,
         RedirectType.push
       );
     }
@@ -37,7 +41,7 @@ export const CallReciever: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
   const rejectCall = () => {
     setIsBeingCalled(undefined);
-    ws.emit("start-call-rej", { room: isBeingCalled });
+    ws.emit("start-call-rej", { targetUserId: isBeingCalled });
   };
 
   if (isBeingCalled) {
