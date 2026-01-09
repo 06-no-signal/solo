@@ -18,6 +18,7 @@ import { useAuth } from "react-oidc-context";
 export function AppSidebar() {
   const { user } = useAuth();
   const tenant = useTenant();
+  const tenantId = tenant?.id;
   const {
     data: users,
     isFetching,
@@ -47,7 +48,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild className="relative">
                   <div className="flex flex-row">
                     <a
-                      href={`${location.pathname}/chat/${u.id}`}
+                      href={`/${tenantId}/${u.id}/chat`}
                       className="grow shrink"
                     >
                       <span>{u.username}</span>
