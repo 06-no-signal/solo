@@ -148,8 +148,10 @@ export class DatabaseService implements OnModuleDestroy, OnModuleInit {
   /**
    * Get the data source for the current tenant
    */
-  getDataSource() {
-    const tenantId = this.cls.get(TENANT_KEY);
+  getDataSource(tenantId?: string): DataSource {
+    if (!tenantId) {
+      tenantId = this.cls.get(TENANT_KEY);
+    }
 
     if (!tenantId) {
       throw new HttpException('Tenant ID not provided', HttpStatus.BAD_REQUEST);

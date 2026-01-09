@@ -10,9 +10,9 @@ export class UsersService {
 
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async createUser(user: User) {
+  async createUser(user: User, tenantId?: string): Promise<void> {
     this.userRepository = this.databaseService
-      .getDataSource()
+      .getDataSource(tenantId)
       .getRepository(User);
     // chec if a user with the same keycloakId exists
     const existingUser = await this.userRepository.findOneBy({
@@ -34,9 +34,19 @@ export class UsersService {
     await this.userRepository.save(newUser);
   }
 
-  async getUsers(): Promise<User[]> {
+  async getUserByKeycloakId(
+    keycloakId: string,
+    tenantId?: string,
+  ): Promise<User | null> {
     this.userRepository = this.databaseService
-      .getDataSource()
+      .getDataSource(tenantId)
+      .getRepository(User);
+    return this.userRepository.findOneBy({ keycloakId });
+  }
+
+  async getUsers(tenantId?: string): Promise<User[]> {
+    this.userRepository = this.databaseService
+      .getDataSource(tenantId)
       .getRepository(User);
     return this.userRepository.find();
   }
