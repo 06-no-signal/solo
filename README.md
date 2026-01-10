@@ -25,15 +25,15 @@
 
 - [x] Repozitorij
 - [x] Mikrostoritve in »cloud-native« aplikacija
-- [ ] Dokumentacija
-- [ ] Dokumentacija API
+- [x] Dokumentacija
+- [x] Dokumentacija API
 - [x] Cevovod CI/CD
 - [x] Helm charts
 - [x] Namestitev v oblak
 - [ ] »Serverless« funkcija
 - [x] Zunanji API
-- [ ] Večnajemništvo (ang. multitenancy)
-- [ ] Preverjanje zdravja
+- [x] Večnajemništvo (ang. multitenancy)
+- [x] Preverjanje zdravja
 - [ ] GraphQL in gRPC
 - [x] Sporočilni sistemi
 - [ ] »Event sourcing« in CQRS
@@ -43,7 +43,7 @@
 - [ ] Upravljanje s konfiguracijo
 - [x] Grafični vmesnik
 - [x] Vmesna predstavitev
-- [ ] Oddaja projekta
+- [x] Oddaja projekta
 - [x] Terraform
 - [x] API Gateway
 - [x] Ingress controller
@@ -62,7 +62,7 @@ export KUBECONFIG=$(pwd)/kubeconfig.yaml
 kubectl get nodes
 ```
 
-If using Azure CLI, get credentials with:
+If using Azure CLI without terraform, get credentials with:
 ```bash
 az aks get-credentials --resource-group solo-rg --name solo-aks
 ```
